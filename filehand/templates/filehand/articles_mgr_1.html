@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head_title %}Welcome X | {{ block.super }}{% endblock %}
+
+{% block js %} {% include "filehand/articles_mgr_1_include_js.html" %} {% endblock js %}
+
+{% block style %}
+<style>
+	.container{  min-width: 1200px;}
+	.compacted select.form-control:not([size]):not([multiple]) { height: inherit; }
+	.compacted .form-control { padding: .2rem .2rem; font-size: .8rem; line-height: 1.55; }
+	.compacted .form-group { margin-bottom: .3rem; }
+	.compacted input[id^="id_form-"][id$="-file"]{display:inline-block;}
+	.compacted label { display: inline-block; margin-bottom: .3rem; font-size: .9rem; font-weight: 600; }
+	/*.font-weight-bold { font-weight: 600; }*/
+	.compacted div[class^="col-"] { padding-right: 3px; padding-left: 3px; }
+
+	.compacted .popover { max-width: 500px; }
+	
+	.popover-content { background-color: light-grey }
+	    
+	span[id^="error_"] { display:none; }
+	ul.errorlist { margin: 0 0 -2px -12px;}
+	
+	.alert.alert-block.alert-danger{display:none}
+	span.has-errors{color:#a94442}
+	
+	.ui-tooltip {
+	  padding: 4px 8px;
+	  color: grey;
+	  font: 12px "Helvetica Neue", Sans-Serif;
+	  border: none;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container compacted">
+
+		<h5><p class='row' style='margin:24px 0 0 0; text-align:center;'>{{ title }}
+			<a class="fa fa-info-circle" style="margin:-6px 0 0 6px" data-toggle="modal" href="equis" data-popup-url="/filehand/modalinfo/info_article_permissions" 
+			   data-target="#modal" data-popup-title="" title="Info" tabindex="-1"></a>
+		</p></h5>
+
+		<div class='row' style="height:24px; margin: -14px 0 0 12px">
+			{% if msg %}
+				{% if msg > '0' %}
+					<button type="button" class="btn-link" data-toggle="popover" title-disable="if not -disabled" 
+						{% if formset.total_error_count %}
+							data-HTML="popover content if not overridden by js function" style="color:#a94442; font-weight:bold">{% trans 'Atención:' %}
+						{% else %}
+							data-HTML="popover content if not overridden by js function" style="color:darkgreen; font-weight:bold">{% trans 'Resultado:' %}
+						{% endif %}
+					</button>
+				{% endif %}
+			{% endif %}
+		</div>
+		
+		{# <!-- The form --> #}
+		{% if formset %}
+			{% crispy formset helper %}
+		{% endif %}
+		
+		{% comment %} <!-- Are there images to upload like if an article was just uploaded -->
+		{% if images == 'True' %}
+			<h1> Images to upload! </h1>
+            <a class="fa fa-plus" data-toggle="modal" href="not_required" \
+                  data-popup-url= "{% url 'uploadArticleImages' ' ' %}"  \
+                  data-target="#modal" data-popup-title="Subir Imagenes" title="Agregar Nuevo" tabindex="-1"></a>
+		{% endif %}
+		{% endcomment %}
+
+</div>
+{% endblock %}
+
+{% block extrabody %}
+{# <!-- ========================================================================================== --> #}
+
+{# <!-- modal popup window 1 of 2 --> #}
+<div id="popup1" class="modal fade">
+	<div class="modal-dialog" style="max-width: 900px">
+		<div id="modal-control" class="modal-content" style="background-color: transparent!important; border:none">
+			<div class="modal-body-alt"></div> {# In this body goes html that contains a button for closing the modal #}
+		</div>
+	</div>
+</div>
+
+{# <!-- modal popup window 2 of 2 --> #}
+<div id="popup2" class="modal fade">
+	<div class="modal-dialog" style="max-width: 900px">
+		<div id="modal-control" class="modal-content">
+			<div class="modal-header">
+				<button type="button" id="popup2-close-modal" class="popup2class close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Modal Title</h4>
+			</div>
+			<div class="modal-body-p2"></div>
+		</div>
+	</div>
+</div>
+
+{# <!-- ========================================================================================== --> #}
+
+{# <!-- messages to display through a popover like what changes were made or what errors there are --> #}
+<div style='display:none'> {# not displayed because it'll be shown in a popup #}
+	{# <div id='id-popover-title'>{% trans 'Mensaje:' %}</div> #}
+	<div id='id-msg' class='row pre-scrollable' style='margin:0 0 0 0; padding: 0 0 0 6px; text-align:left; font-size: 80%; height: 36px;'>
+		{% if msg %}<p style='color: darkgreen; font-weight: bold; text-align:left'>{{ msg|safe }}</p>{% endif %}
+		{% if formset.total_error_count %}
+			<div class="errorList" style="color:#A94442; margin:-6px 0 0 0">
+				{% trans "Errores:" %} &nbsp; 
+		    	{% for dict in formset.errors %} {% for error in dict.values %}
+		        	{{ error }}
+		        {% endfor %} {% endfor %}
+		    </div>
+		{% endif %}
+	</div>
+</div>
+{# <!-- ========================================================================================== --> #}
+{% endblock extrabody %}

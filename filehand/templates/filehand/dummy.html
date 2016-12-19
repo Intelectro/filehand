@@ -1,0 +1,30 @@
+class NewDocumentForm(forms.Form):
+    fileName = forms.CharField(
+        max_length = 100)
+    horma = forms.ChoiceField(
+        choices = HORMA_CHOICES
+        )
+    
+    def clean(self):
+        data = self.cleaned_data
+        fileName = data.get("fileName")
+        extension = os.path.splitext(fileName)[1]
+        if extension == "":
+            fileName = fileName.title() + ".html"
+        elif extension == ".html":
+            fileName = os.path.splitext(fileName)[1].title() + ".html"
+        else:
+            self.add_error("fileName", "No uses puntos en el nombre del archivo, excepto el punto de la extensión '.html'. Si no incluyes la extensión, se asume '.html'.")
+            raise ValidationError("Extensión Inválida.")
+            return data 
+        import re
+        #pattern = re.compile("^[a-zA-Z][\w -]*.html")
+        pattern = re.compile("([-_$@#()^=&,'áéíóúÁÉÍÓÚ \w\d+]+.html)$")
+        if pattern.match(fileName):
+            pass
+        else:
+            self.add_error("fileName", "Carácteres prohibidos: < > : \ / | ? * doble comilla y . excpto en .html")
+            raise ValidationError("Nombre Inválido.")
+            return data
+        data["fileName"] = fileName
+        return data

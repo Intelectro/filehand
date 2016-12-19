@@ -1,0 +1,93 @@
+{% load staticfiles %}
+{# Ref. http://getbootstrap.com/components/#navbar #}
+
+ <!-- <nav class="navbar navbar-default navbar-fixed-top"> -->
+<nav class="navbar navbar-default navbar-static-top">
+
+	<div class="container">
+	
+		<div class="navbar-header">
+		
+			<a class="navbar-brand" href="/" > <img src="{% static 'img/cronotaxi_title.jpg' %}" /> </a> 
+			
+		    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"> Uno </span>
+				<span class="icon-bar"> Dos </span>
+				<span class="icon-bar"> Tres </span>
+		    </button>
+
+		</div>
+		
+		<div id="xtra-navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li {% if 'about' in request.path %}class="active"{% endif %}> <a href="{% url 'about' %}">About</a></li> <!-- you can also pass variables to the html page  -->
+				
+	 			<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Folios <span class="caret"> </span> </a>
+					<ul class="dropdown-menu">
+						
+						<li {% if 'lista' in request.path %}class="active"{% endif %}> <a href="/filehand/lista.html">Upload Image</a> </li>
+						
+		     			<li {% if 'receipt_create' in request.path %}class="active"{% endif %}> <a href="{% url 'receipt_create' %}">Crear</a> </li>
+		     			
+		     			<li {% if 'receipt_list' in request.path %}class="active"{% endif %}> <a href="/cronosales/receipt_list.html">Listar</a> </li>
+		     			
+						<li role="separator" class="divider"> </li>
+						<li class="dropdown-header"> En Proceso </li>
+						<li {% if 'receipts_view' in request.path %}class="active"{% endif %}> <a href="{% url 'receipts_view' %}">receipts_view</a> </li>
+					</ul>
+	 			</li>
+	        
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li {% if 'home' in request.path %}class="active"{% endif %}><a href="/home.html">Home</a></li> <!-- takes you to http://localhost:8000/home -->
+						<li {% if 'example' in request.path %}class="active"{% endif %}><a href="/example-fluid.html">Example</a></li>
+						<li {% if 'sample' in request.path %}class="active"{% endif %}><a href="/sample.html">Sample</a></li>
+	
+						<li role="separator" class="divider"></li>
+						<li class="dropdown-header">Nav header</li>
+						<li {% if 'contact' in request.path %}class="active"{% endif %}><a href="/contact.html">Contact</a></li>
+						<li {% if 'tests_general' in request.path %}class="active"{% endif %}><a href="/tests_general.html">Tests General</a></li>
+	
+						<li role="separator" class="divider"></li>
+						<li class="dropdown-header">Dev Tests</li>
+						<!-- <li {% if 'regex' in request.path %}class="active"{% endif %}><a href="/devtests/regex.html">Regular expressions</a></li> -->
+						<li {% if 'regex' in request.path %}class="active"{% endif %}><a href="{% url 'regex' %}">Regular expressions</a></li>
+						<li><a href="{% url 'auth_logout' %}">Salir</a></li>
+					</ul>
+				</li>
+			</ul>
+	
+			{% if request.user.is_authenticated %}
+			<ul class="nav navbar-nav navbar-left">
+				<li style='padding-left:280px; line-height:3.6; color: #000;'>Usuario: {{ request.user }}</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="{% url 'auth_logout' %}">Salir</a></li>
+			</ul>
+			{% else %}
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="{% url 'registration_register' %}">Registrarse</a></li>
+			</ul>
+			{% endif %}
+			
+			{% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
+				{% if not "/password/reset" in request.get_full_path %}
+					{% if not "/accounts/register" in request.get_full_path %}
+					<form class='navbar-form navbar-right' method='POST' action='{% url "auth_login" %}'>{% csrf_token %}
+						<div class = 'form-group'>
+							<input type ='text' class='form-control' name = 'username' placeholder='Username' />
+						</div>
+						<div class = 'form-group'>
+							<input type ='password' class='form-control' name = 'password' placeholder='Password' />
+						</div>
+						<button type='submit' class='btn btn-default'>Entrar</button>
+					</form>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+			{% comment %}{% url "auth_login" %}{% endcomment %}
+		</div> {# .navbar-collapse.collapse #}
+	</div> {# container #}
+</nav>

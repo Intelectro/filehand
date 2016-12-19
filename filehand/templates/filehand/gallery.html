@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% load custom %} {# templatetags/custom #}
+<!-- {# load widget_tweaks #} -->
+{# {% block head_title %} Welcome X | {{ block.super }} {% endblock %} #}
+{% block head_title %} Minimal Django File Upload Example  {% endblock %}
+
+{% block js %}
+<script>
+//$(document).ready(function(){
+//<input id="id_docfile" name="docfile" type="file">
+//$('input#id_docfile').addClass('btn primary-btn');
+//});
+</script>
+{% endblock js %}
+
+{% block style %}
+<style>
+.row.h200 {height:240px; border: 1px solid lightgrey;}
+.row img{width:100%; max-width:200px;}
+.vcenter{
+  /*position: relative;*/
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid lightgrey;
+}
+.col-md-4.vcenter {float:left}
+/* Rotate div R O T A T E */
+/*
+.vcenter {
+    -ms-transform: rotate(7deg); /* IE 9 */
+/*
+    -webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */
+/*    transform: rotate(7deg);
+}
+*/
+</style>
+{% endblock style %}
+
+{% localize on %}
+	
+{% block content %}
+
+	<!-- List of uploaded documents -->
+	{% if documents %}
+	<div class="container">
+		{% for document in documents %}
+			{% if forloop.counter0|divisibleby:3 %}
+				<div class="row h200">	{# opens here every 3 loops #}
+			{% endif %}
+			<div class="col-md-6 vcenter">
+				{# <div> {{ forloop.counter }} , {{ document.docfile.url }} </div> #}
+				{% if document.docfile.name|isImageFile %}
+					<div style="text-align:center">
+						<a href="gallery_lg/{{ document.docfile.url }}">
+							<img class="image" src="{{ document.docfile.url }}" >
+						</a>
+					</div>
+				{% else %}
+					{{ document.docfile|fileContents|safe }} {# safe enables output as HTML #}
+				{% endif %}
+				{# <div> {{ document.docfile.name }} </div> #}
+			</div>
+			{% if forloop.counter|divisibleby:3 %}
+				</div>	{# closes at the end of every 3rd loop #}
+			{% elif forloop.last %}
+				</div>	{# closes here at the end of the last loop unless it has already been closed because it was divisible by 3 #}
+			{% endif %}
+		{% endfor %}
+	</div>
+	{% else %}
+	<div class="container">
+		<br>
+		<p>No documents.</p>
+	</div>
+	{% endif %}
+
+	<div class="container">	
+		<!-- Upload form. Note enctype attribute! -->
+		<form class="form-inline" action="{% url 'gallery' %}" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<p>{{ form.non_field_errors }}</p>
+			{{ form.docfile.errors }}
+			{{ form.docfile.label_tag }}
+			{{ form.docfile }}
+			
+			<input class="btn btn-primary" type="submit" value="Upload" />
+		</form>
+	</div>
+	
+{% endblock content %}
+{% endlocalize %}

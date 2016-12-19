@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head_title %}Welcome X | {{ block.super }}{% endblock %}
+
+{% block js %}
+<script>
+	$(document).ready(function(){
+		
+		var $popup1 = $('#popup1');
+		var $popup2 = $('#popup2');
+		
+		$('.articles-form div[id$="-file"]:not(:last)').hide();
+		
+		$('div.row').each(function(){
+			var $fileName = $('input[id^="id_form-"][id$="-file_name"]', this).val()
+			if( $fileName ) {
+				$this = $(this);
+				var $newFileName = $fileName.replace(/ /g, '~');
+				//window.alert('input[id$=-file_name]).val() with space replaced by ~ ' + $newFileName );
+				$this.html($this.html().replace("perro", $newFileName));
+				//$this.html($this.html().replace("perro", $newFileName));	// TAKE THIS OUT WHEN YOU GET IT WORKING ALONG WITH THE ICON
+			}
+		});
+
+		// set author to current user and disable
+		// ABOUT CHECKING IF INPUT FILE IS SELECTED http://stackoverflow.com/questions/16125255/how-i-know-if-my-input-file-has-content-selected
+		var loggedInUser = '';
+		try {
+			loggedInUser = {{ request.user.pk }};
+		}
+		catch(exc){
+			loggedInUser = '';
+			//window.alert("logged in user.pk tricked = " + loggedInUser)
+		}
+		$( 'select[id$="-author"]:last' ).val(loggedInUser);
+		
+		//window.alert('loggedInUser = ' + loggedInUser);
+		// if user is superuser then don't disable author field
+		if ( loggedInUser != 1 ) {
+			$( 'form .row' ).each(function(){
+				$(this).find('select[id$="-author"]').attr("disabled", true);
+			});
+		}
+		
+		// permissions form submit 
+		$(".articles-form").on("click", "input#submit-id-submit", function(ev){
+			// enable author before submitting form else this field is not submitted
+			$( 'form .row' ).each(function(){
+				$(this).find('select[id$="-author"]').attr("disabled", false);
+			});
+			// if no file selected for upload then clear autopopulated author field
+			// so as to not get a "required field error"
+			if ( $( 'select[id$="-author"]:last' ).val() != '' ) {
+				if ( $( 'input[id$="-file"]:last').val() == '' ) {
+					$( 'select[id$="-author"]:last' ).val('');
+				}
+			}
+		});
+		//<input name="submit" value="Guardar" class="btn btn-primary" id="submit-id-submit" type="submit">
+		//<input class="clearablefileinput" id="id_form-3-file" name="form-3-file" type="file">
+		
+		//
+		// MODAL POPUP USED TO DISPLAY INFO ON THE CURRENT PAGE
+		//
+		$(".Site").on("click", "a.fa-info-circle", function(ev){
+			var $link = $(this);
+			var popup_url = $link.data('popup-url');
+		    if (!popup_url) {
+		    	window.alert("No popup_url given");
+		        return true;
+		    }
+		    $('#popup1').modal({
+				backdrop: 'static',
+				keyboard: false
+			});
+			// http://api.jquery.com/load/
+		    $('.modal-body-alt', $popup1).load( popup_url, function(data, status) {
+		        $popup1.on('shown.bs.modal', function () {
+		        }).modal("show");
+		    });
+	    	$('.popup1class.close', $popup1).click(function() {
+		    	// do something when dialog is closing
+	    		//window.alert('\nC L O S I N G   M O D A L .modal-body-alt .popup1class.close');
+		    });
+		    $('#popup1-close-modal', $popup1).click(function() {
+		    	//window.alert('\nC L O S I N G   M O D A L .modal-body-alt #popup1-close-modal');
+            	//$(".modal-body-alt").remove();
+            	//$("#popup1 #modal-control").append("<div class='modal-body-alt' style: background></div>");
+	    		// do something when dialog is closing
+	    	});
+		    return false; // disable default link functionality
+		});
+		
+		// http://stackoverflow.com/questions/21015719/shown-bs-modal-fires-multiple-times-when-you-close-and-reopen-modal
+		// http://stackoverflow.com/questions/14451052/in-twitter-bootstrap-how-do-i-unbind-an-event-from-the-closing-of-a-modal-dialo
+		// https://www.bennadel.com/blog/2390-tracing-event-binding-and-event-triggering-in-jquery.htm
+		//
+		//	MODAL POPUP THAT SHOWS THE FORM WHERE IMAGES ARE UPLOADED / DELETED
+		//
+		$(".Site").on("click", "a.fa-picture-o", function(ev){
+			ev.preventDefault(); // prevent navigation	USELESS?
+			var $link = $(this);
+			var popup_url = $link.data('popup-url');
+		    var popup_title = $link.data('popup-title');
+		    if (!popup_url) {
+	    		window.alert("No popup_url given");
+	        	return true;
+	    	}
+		    
+	    	//window.alert("\npopup_url = " + popup_url);
+	    	
+	    	$('.modal-title', $popup2).html(popup_title);
+	    	
+	    	// prevent clicking outside the popup or pressing a key from making the modal go away
+	    	$('#popup2').modal({
+				backdrop: 'static',
+				keyboard: false
+			});
+
+	    	$('.modal-body', $popup2).load( popup_url, function() {
+		        $popup2.on( 'shown.bs.modal', function () {
+		        	treatLoad();
+		        	$(this).off('shown.bs.modal'); // prevents treatLoad() from running twice when you open the modal twice, or 3 when 3 ... 
+	        	}).modal("show");
+	    	});
+	    	$('.popup2class.close', $popup2).click(function() {
+	    		//window.alert('\n* C L O S I N G   M O D A L * \n(.popup2class.close, $popup2).click(function() {');
+	    		$('.popup2class.close').off('click');
+		    });
+		    $('#popup2-close-modal', $popup2).click(function() {
+            	$(".modal-body").remove();
+            	$("#popup2 #modal-control").append("<div class='modal-body' style: background></div>");
+            	//$('#popup2').empty(); // to unbind all events tied to the modal's contents
+            	//$('#popup2').modal('hide'); // to unbind all events tied to the modal's contents
+            	//window.alert('\nC L O S I N G   M O D A L \n(#popup2-close-modal, $popup2).click(function() {');
+            	$('#popup2-close-modal').off('click');
+	    	});
+	    	return false; // disable default link functionality	    
+		});
+		//
+		// CODE THAT HANDLES THE IMAGE HANDLING FORM ONCE LOADED, BEGIN
+		//
+		//http://stackoverflow.com/questions/20822823/django-jquery-ajax-file-upload
+		function gofor( popup_url ) { 
+		    var dialog = $(this),
+		        options = {
+		            url: popup_url,
+		            type: 'POST',
+		            success: function(data, status) {
+		            	//window.alert('SUCCESS: data = ' + data + ' status = ' + status);
+		            	//$(".modal-body").empty();
+		            	$(".modal-body").remove();
+		            	//$('#ajax_form_modal_result').empty();
+		            	$("#popup2 #modal-control").append("<div class='modal-body' style: background></div>");
+		            	$(".modal-body").html(data);
+		            	$('.modal-body .images-form div[id$="-file"]:not(:last)').hide();
+		            	//window.alert(response);
+		            	treatLoad();
+		                },
+		            error: function(data, status) {
+		            	//window.alert('ERROR: data = ' + data + ' status = ' + status);
+		            	$(".modal-body").html(data);
+		            	$('.modal-body .images-form div[id$="-file"]:not(:last)').hide();
+		            	//window.alert(response);
+		            	treatLoad();
+		                }
+		            };
+		    $('#ajax_form_modal_result').ajaxSubmit(options);
+		}
+		//
+		//CODE THAT HANDLES THE IMAGE HANDLING FORM ONCE LOADED, END
+		//
+		
+		//
+		//	THINGS TO DO WHEN THE IMAGE HANDLING FORM OPENS AND RELOADS
+		//
+		function treatLoad(){
+			$('.modal-body .images-form div[id$="-file"]:not(:last)').hide();
+			try {
+				var $articleP = $(".modal-body input#articleProcessedHolder").val();
+				//window.alert("treatLoad Article being processed =" + $articleP);
+				var $newArticleP = $articleP.replace(/ /g, '~');
+				//window.alert("newarticlep =" + $newArticleP);
+				var attribute = $(".modal-body input#modal-form-submit").data("popupUrl");
+				//window.alert("attribute before replace=" + attribute);
+				attribute = attribute.replace(/%20/g, $newArticleP);
+				
+				//window.alert("attribute after replace=" + attribute);
+				
+				$(".modal-body input#modal-form-submit").data("popupUrl", attribute );
+				//var attributeTest = $(".modal-body input#modal-form-submit").data("popupUrl");
+			}
+			catch(exc){
+				window.alert("treatLoad E X C E P T I O N  No se pudo armar el URL");
+			}
+			
+			$(".modal-body").on("click", "#modal-form-submit", function() {
+				//window.alert('CLICK');
+				var $link = $(this);
+				var popup_url = $link.data('popup-url');
+				//$(".modal-body").unbind("click");
+				gofor(popup_url);
+			});
+		}
+		
+		// Tooltips: https://jqueryui.com/tooltip/
+		$( function() {
+			$( document ).tooltip();
+			$( ".ttip1" ).tooltip({
+				position: { my: "center top-24", at: "center top-24", of: ".ttip1" }
+			});
+			$( ".ttip2, .ttip3, .ttip4, .ttip5, .ttip6" ).tooltip({
+				position: { my: "left top-24", at: "center top-24", collision: "none" }
+			});
+		  
+		  // http://stackoverflow.com/questions/21459042/can-i-use-dynamic-content-in-a-bootstrap-popover
+		  var content = $('[id*="id-msg"]');
+		  var title = $('[id*="id-popover-title"]');
+		  $('[data-toggle="popover"]').popover({
+		      html: true,
+		      content: function () {
+		          return content.html();
+		      },
+		      title: function() {
+		        return title.html();
+		      }
+		  });
+		});
+
+	});
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+	select.form-control:not([size]):not([multiple]) { height: inherit; }
+	.form-control { padding: .2rem .2rem; font-size: .8rem; line-height: 1.55; }
+	.form-group { margin-bottom: .3rem; }
+	input[id^="id_form-"][id$="-file"]{display:inline-block;}
+	label { display: inline-block; margin-bottom: .3rem; font-size: .9rem; font-weight: 600; }
+	/*.font-weight-bold { font-weight: 600; }*/
+	div[class^="col-"] { padding-right: 3px; padding-left: 3px; }
+
+	.popover { max-width: 500px; }
+	
+	.popover-content { background-color: light-grey }
+	    
+	span[id^="error_"] { display:none; }
+	ul.errorlist { margin: 0 0 -2px -12px;}
+	
+	.alert.alert-block.alert-danger{display:none}
+	span.has-errors{color:#a94442}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+		<h5><p class='row' style='margin:24px 0 0 0; text-align:center;'>{{ title }}
+			<a class="fa fa-info-circle" style="margin:-6px 0 0 6px" data-toggle="modal" href="equis" data-popup-url="/filehand/modalinfo/info_article_permissions" 
+			   data-target="#modal" data-popup-title="" title="Info" tabindex="-1"></a>
+		</p></h5>
+
+		<div class='row' style="height:30px;"> <div class="col-sm-1"></div>
+			{% if msg %}
+				{% if msg > '0' %}
+					<button type="button" class="btn-link" data-toggle="popover" title-disable="if not -disabled" 
+						{% if formset.total_error_count %}
+							data-HTML="popover content if not overridden by js function" style="color:#a94442; font-weight:bold">{% trans 'Atención:' %}
+						{% else %}
+							data-HTML="popover content if not overridden by js function" style="color:darkgreen; font-weight:bold">Info:
+						{% endif %}
+					</button>
+				{% endif %}
+			{% endif %}
+		</div>
+		
+		{# <!-- The form --> #}
+		{% if formset %}
+			{% crispy formset helper %}
+		{% endif %}
+		
+		
+		<div>
+		<form action="" method="POST">
+		 {% csrf_token %}
+		 <table class="table table-sm table-bordered">
+		{{ formset.as_table }}
+		</table>
+		<input type="submit" value="Submit">
+		</form>
+		</div>
+		
+		
+		{% comment %} <!-- Are there images to upload like if an article was just uploaded -->
+		{% if images == 'True' %}
+			<h1> Images to upload! </h1>
+            <a class="fa fa-plus" data-toggle="modal" href="not_required" \
+                  data-popup-url= "{% url 'uploadArticleImages' ' ' %}"  \
+                  data-target="#modal" data-popup-title="Subir Imagenes" title="Agregar Nuevo" tabindex="-1"></a>
+		{% endif %}
+		{% endcomment %}
+
+</div>
+{% endblock %}
+
+{% block extrabody %}
+{# <!-- ========================================================================================== --> #}
+
+{# <!-- modal popup window 1 of 2 --> #}
+<div id="popup1" class="modal fade">
+	<div class="modal-dialog" style="max-width: 900px">
+		<div id="modal-control" class="modal-content" style="background-color: transparent!important; border:none">
+			<div class="modal-body-alt"></div> {# In this body goes html that contains a button for closing the modal #}
+		</div>
+	</div>
+</div>
+
+{# <!-- modal popup window 2 of 2 --> #}
+<div id="popup2" class="modal fade">
+	<div class="modal-dialog" style="max-width: 900px">
+		<div id="modal-control" class="modal-content">
+			<div class="modal-header">
+				<button type="button" id="popup2-close-modal" class="popup2class close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Modal Title</h4>
+			</div>
+			<div class="modal-body" style: background></div>
+		</div>
+	</div>
+</div>
+
+{# <!-- ========================================================================================== --> #}
+
+{# <!-- messages to display through a popover like what changes were made or what errors there are --> #}
+<div style='display:none'> {# not displayed because it'll be shown in a popup #}
+	<div id='id-popover-title'>{% trans 'Mensaje:' %}</div>
+	<div id='id-msg' class='row pre-scrollable' style='margin:0 0 0 0; padding: 0 0 0 6px; text-align:left; font-size: 80%; height: 36px;'>
+		{% if msg %}<p style='color: darkgreen; font-weight: bold; text-align:left'>{{ msg|safe }}</p>{% endif %}
+		{% if formset.total_error_count %}
+			<div class="errorList" style="color:#A94442; margin:-6px 0 0 0">
+				{% trans "Errores:" %} &nbsp; 
+		    	{% for dict in formset.errors %} {% for error in dict.values %}
+		        	{{ error }}
+		        {% endfor %} {% endfor %}
+		    </div>
+		{% endif %}
+	</div>
+</div>
+
+{# <!-- ========================================================================================== --> #}
+{% endblock extrabody %}

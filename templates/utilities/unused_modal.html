@@ -1,0 +1,139 @@
+<script>
+$(document).ready(function(){
+var $popup = $('#popup');
+//bindClickOnSubmit();
+//
+//	POPUP USED TO SHOW THE FORM WHERE IMAGES ARE HANDLED
+//
+$(".Site").on("click", "a.fa-picture-o", function(ev){
+	ev.preventDefault(); // prevent navigation	USELESS?
+	var $link = $(this);
+	var popup_url = $link.data('popup-url');
+    var popup_title = $link.data('popup-title');
+    if (!popup_url) {
+    	window.alert("No popup_url given");
+        return true;
+    }        
+    //window.alert("\npopup_url = " + popup_url);
+    $('.modal-title', $popup).html(popup_title);
+    // prevent clicking outside the popup or pressing a key from making the modal go away
+    $('#popup').modal({
+		backdrop: 'static',
+		keyboard: false
+	});
+	// http://api.jquery.com/load/
+	$("#modal-control").attr("class", "modal-content");
+    $(".modal-header").show();
+    $(".modal-body-alt").hide();
+    $(".modal-body").show();
+    $('.modal-body', $popup).load( popup_url, function() {
+        $popup.on( 'shown.bs.modal', function () {
+        	// do something when dialog is shown
+        	//window.alert('there there');
+        }).modal("show");
+		treatLoad();
+   		
+    });
+    $('.close', $popup).click(function() {
+    	// do something when dialog is closing
+    });
+    $('.close-modal', $popup).click(function() {
+    	// do something when dialog is closing
+    });
+    return false; // disable default link functionality	    
+});
+
+function treatLoad(){
+	$('.modal-body .images-form div[id$="-file"]:not(:last)').hide();
+
+	try {
+		var $articleP = $(".modal-body input#articleProcessedHolder").val();
+		var $newArticleP = $articleP.replace(/ /g, '~');
+		var attribute = $(".modal-body input#modal-form-submit").data("popupUrl");
+		attribute = attribute.replace(/%20/g, $newArticleP);
+		$(".modal-body input#modal-form-submit").data("popupUrl", attribute );
+		var attributeTest = $(".modal-body input#modal-form-submit").data("popupUrl");
+	}
+	catch(exc){
+		window.alert("No se pudo armar el URL");
+	}
+	
+	$(".modal-body").on("click", "#modal-form-submit", function() {
+		window.alert('CLICK');
+		var $link = $(this);
+		var popup_url = $link.data('popup-url');
+		$(".modal-body").unbind("click");
+		gofor(popup_url);
+	});
+}
+
+//
+// CODE THAT HANDLES THE IMAGE HANDLING FORM ONCE LOADED, BEGIN
+//
+//http://stackoverflow.com/questions/20822823/django-jquery-ajax-file-upload
+function gofor( popup_url ) { 
+    var dialog = $(this),
+        options = {
+            url: popup_url,
+            type: 'POST',
+            success: function(response) {
+            	$(".modal-body").html(response);
+            	$('.modal-body .images-form div[id$="-file"]:not(:last)').hide();
+            	//window.alert(response);
+            	treatLoad();
+                }
+            };
+    $('#ajax_form_modal_result').ajaxSubmit(options);
+}
+
+//
+//CODE THAT HANDLES THE IMAGE HANDLING FORM ONCE LOADED, END
+//
+
+//
+// POPUP USED TO DISPLAY INFO ON THE CURRENT PAGE
+//
+$(".Site").on("click", "a.fa-info-circle", function(ev){
+	var $link = $(this);
+	var popup_url = $link.data('popup-url');
+    if (!popup_url) {
+    	window.alert("No popup_url given");
+        return true;
+    }
+    $('#popup').modal({
+		backdrop: 'static',
+		keyboard: false
+	});
+	// http://api.jquery.com/load/
+    $('.modal-body-alt', $popup).load( popup_url, function(data, status) {
+    	//alert("Data: \n" + data + "\nStatus: " + status);
+    	//alert("\nStatus: \n" + status);
+    	$(".modal-content").attr("class", ".class-changed");
+    	$(".modal-header").hide();
+    	$(".modal-body").hide();
+    	$(".modal-body-alt").show();
+        $popup.on( 'shown.bs.modal', function () {
+        	if ( data.indexOf("error_") > 0 ) {
+            	$(".modal-body-alt").html('status: failure');
+        	}else {
+            	$(".modal-body-alt").html(data);
+        	}
+        }).modal("show");
+    });
+    return false; // disable default link functionality	    
+});
+});
+</script>
+<div id="popup" class="modal fade">
+	<div class="modal-dialog" style="max-width: 900px">
+		<div id="modal-control" class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Modal Title</h4>
+			</div>
+			<div class="modal-body" style: background></div>
+			<div class="modal-body-alt" style: background></div>
+		</div>
+	</div>
+</div>

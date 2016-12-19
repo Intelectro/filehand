@@ -1,0 +1,39 @@
+{% load i18n %}
+<style>
+	.btn.dropdown-toggle.btn-default {padding:0}
+	.btn.dropdown-toggle.btn-default,
+	.btn.dropdown-toggle.btn-default:hover,
+	.btn.dropdown-toggle.btn-default:active,
+	.btn-group.bootstrap-select .dropdown-toggle.btn-default:focus,
+	.open > .btn.dropdown-toggle.btn-default,
+	.open > .btn.dropdown-toggle.btn-default:hover{background:none; border:none; margin:0; z-index:0;}
+	.btn-group.bootstrap-select.open .dropdown-toggle {-webkit-box-shadow: none;}
+	.bootstrap-select .dropdown-menu { background:none; border:none; -webkit-box-shadow: none;}
+	.btn.dropdown-toggle {width:44px; padding:0;}
+	.btn.dropdown-toggle:focus {outline:none;}
+</style>
+
+<script>
+$(document).ready(function(){
+	$(".form-lang").on("change", ".selectpicker", function() {
+		$( ".form-lang" ).trigger( "submit" );
+	});
+});
+</script>
+
+{# <!-- http://stackoverflow.com/questions/16971794/django-set-the-language see also http://books.gigatux.nl/mirror/django/final/ch20lev1sec4.html#ch20ex02 --> #}
+{# <!-- selectpicker is a function in bootstrap-select-1.11.2 . Rather impractical. Takes a lot of css and js --> #}
+<form class="form-lang" action="{% url 'set_language' %}" method="post">
+	{% csrf_token %}
+	<input name="next" type="hidden" value="{{ redirect_to }}" />
+	<select name="language" id="lang" class="selectpicker" data-width="30px">
+		{% get_language_info_list for LANGUAGES as languages %}
+		{% for language in languages %}
+			<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+			    {# {{ language.name_local }} ({{ language.code }}) #}
+			    {{ language.code }} 
+			</option>
+		{% endfor %}
+	</select>
+	<span style="display:none"><input class="form-submit" type="submit" value="Go" /></span>
+</form>

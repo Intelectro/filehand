@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block head_title %}Welcome X | {{ block.super }}{% endblock %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+		
+			<div class ='col-sm-9'>
+		  		<h1>Try Django 1.8</h1>
+		  		<p>The MVPP Landing project is designed to get your project started. 
+		  		The goal is to get you launch as soon as possible with the least amount of investment using time or money. Join us today.</p>
+		  		<p><a class="btn btn-lg btn-primary" href="" role="button">Join us &raquo;</a></p>
+			</div>
+			
+			<div class='col-sm-9'>
+				<div class="embed-responsive embed-responsive-16by9">
+				  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/rHh2cpLGzIA" allowfullscreen></iframe>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+	
+<div class = "row" style = "display:block">
+	<div class = "col-md-9">
+			<ul>
+				{% if user and not user.is_anonymous %}
+				  <li>
+				    <a>Hello {{ user.get_full_name|default:user.username }}!</a>
+				  </li>
+				  <li>
+				    <a href="{% url 'auth:logout' %}?next={{ request.path }}">Logout</a>
+				  </li>
+				{% else %}
+				  <li>
+				    <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
+				  </li>
+				  <li>
+				    <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+				  </li>
+				  <li>
+				    <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
+				  </li>
+				{% endif %}
+			</ul>
+	</div>
+	<div class = "col-md-9">
+	<div
+	  class="fb-like"
+	  data-share="true"
+	  data-width="450"
+	  data-show-faces="true">
+	</div>
+	</div>
+</div>
+   
+		<div class="row">
+			<div class ='col-sm-9'>
+				{% if request.user.is_authenticated %}
+					<h1>You are logged in!</h1>
+					<br>
+					<h1>User logged in is staff: {{ request.user.is_staff }} </h1>
+					<!-- <h1>{{ queryset }}</h1> -->
+					<br>					
+<!-- 					{# if queryset #} -->
+<!-- 						<h2> Welcome Staff </h2> -->
+<!-- 						{# for instance in queryset #} -->
+<!-- 							{{ instance.timestamp }}, {{ instance.full_name }} <br> -->
+<!-- 						{#endfor #}	 -->
+<!-- 					{#endif #} -->
+				{% if queryset %}
+					<h2>Welcome {{ user }}</h2>
+					<table class='table'>
+					{% for instance in queryset %}
+						<tr><td>{{ forloop.counter }}</td><td>{{ instance.email }}</td><td>{{ instance.full_name }}</td><td>{{ instance.timestamp|timesince }} ago</td></tr>
+						{% if instance.email == "abc@gmail.edu" %}
+						<tr><td>is equal</td></tr>
+						{% endif %}
+					{% endfor %}
+					</table>
+				{% endif %}
+				{% else %}
+					<h1>You are NOT logged in!</h1>
+				{% endif %}
+				<br>
+			</div>
+		</div>
+	</div>	
+{% endblock %}
+
+{% comment %} {% block footer %} {% endcomment %} 
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			<div class ='col-sm-6'>
+				<p class='lead text-align-center'>
+					<h2>
+						Page rendered: {{ pageName }} <br>
+					 	Title: {{ title }} <br>
+					 	User: {{ user }}
+					 </h2>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% comment %} {% endblock %} {% endcomment %} 

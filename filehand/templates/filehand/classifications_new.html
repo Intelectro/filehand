@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head_title %}Welcome X | {{ block.super }}{% endblock %}
+
+{% block js %}
+<script>
+	// https://jqueryui.com/tooltip/
+	$( function() {
+	  $( document ).tooltip();
+	  $( ".ttip1" ).tooltip({
+		position: { my: "center top-24", at: "center top-24", of: ".ttip1" }
+	  });
+	  $( ".ttip2" ).tooltip({
+		position: { my: "left top-24", at: "center top-24", of: ".ttip2" }
+	  });
+	  $( ".ttip3" ).tooltip({
+		position: { my: "left top-24", at: "center top-24", of: ".ttip3" }
+	  });
+	  // http://stackoverflow.com/questions/21459042/can-i-use-dynamic-content-in-a-bootstrap-popover
+	  var content = $('[id*="id-msg"]');
+	  var title = $('[id*="id-popover-title"]');
+	  $('[data-toggle="popover"]').popover({
+	      html: true,
+	      content: function () {
+	          return content.html();
+	      },
+	      title: function() {
+	        return title.html();
+	      }
+	  });
+	});
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+	/*.form-group {margin-bottom: 0px;}*/
+	span[id^="error_"] { display:none; }
+	ul.errorlist { margin: 0 0 -2px -12px;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class='col-md-6'>
+			<p style='margin:24px 0 0 0; text-align:center; font-weight:bold;'>{{ title }}</p>
+	
+			<div class='x' style='height:36px; margin: 0px 0 0 auto;'>
+				{% if msg %}
+					{% if msg > '0' %}
+						<button type="button" class="btn-link" data-toggle="popover" title-disable="if not -disabled" 
+							data-HTML="popover content if not overridden by js function" style="color:darkgreen; font-weight:bold">{% trans 'Atención:' %}</button>
+					{% endif %}
+				{% endif %}
+			</div>
+			
+			<div style='display:none'> {# not displayed because it'll be shown in a popover #}
+				<!-- <div id='id-popover-title'>{% trans 'Mensaje:' %}</div> -->
+				<div id='id-msg' class='row pre-scrollable' style='margin:0 0 0 0; padding: 0 0 12px 6px; font-size: 80%;'>
+					{% if msg %}<span style='color: darkgreen; font-weight: bold;'>{{ msg|safe }}</span>{% endif %}
+
+					{% if formset.total_error_count %}
+						<div class="errorList" style="color:#A94442; margin:6px 0 0 0">
+							{% trans "Errores:" %} &nbsp; 
+					    	{% for dict in formset.errors %} {% for error in dict.values %}
+					        	{{ error }}
+					        {% endfor %} {% endfor %}
+					    </div>
+					{% endif %}
+				</div>
+			</div>
+			
+			{% if formset %}
+				{% crispy formset helper %}
+			{% endif %}
+		</div>
+
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,126 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+ -->
+
+<div class="page-header">
+	<h2 itemprop="name">Actualizador DynDNS Implementado en Un Raspberry 3 Model B</h2>
+</div>
+
+<div class="newspaper_2">
+
+<h4>Raspberry pi 3 Model B</h4>
+	<ul>
+		<li>Login: pi</li>
+		<li>Password: raspberry</li>
+	</ul>
+
+	<h4>Metodo de instalacion de Raspbian</h4>
+	<ul>
+		<li>La tarjeta micro SD debe estar en formato FAT (minimo 4GB de
+			memoria , clase 10 preferentemente)</li>
+		<li>Descargar la ultima version de noobs (incluye raspbian,
+			version lite no lo incluye)Noobs (instalador)</li>
+		<li>Extraer los achivos en la raiz de la micro sd Intoducir micro
+			SD en Raspberry y encenderlo (solo se conecta a una toma de
+			corriente)</li>
+		<li>Selecciona el SO (sistema operativo), en este caso Raspbian
+			ya incluido, o descargar uno via internet.</li>
+		<li>Presionar en INSTALL, al terminar la instalacion aparecera
+			mensaje "install complete" dar enter y reiniciara el raspberry.</li>
+		<li>Despues del reinicio se mostrara la pantalla de escritorio
+			del raspberry.</li>
+	</ul>
+
+
+	<h4>Instalacion de ddclient (raspbian)</h4>
+	<p>(Las imagenes que se muestran son para complementar la
+		explicacion)</p>
+
+	<ul>
+		<li>Se debe tener una conexion a internet</li>
+		<li>Ejecutar en la cosola de comandos: sudo apt-get install
+			ddclient , el cual descargara e instalara ddclient nos dara 2
+			opciones S/N (espanol) o Y/N (ingles), escribimos S o Y ,segun sea el
+			caso terminara de instalar y aparesera una interfaz para ingresar
+			nuestros datos</li>
+		<li>CON LAS FLECHAS DEL TECLADO ubicar www.dyndns.com y dar enter
+			para seleccionar.</li>
+	</ul>
+	
+	<p>
+		<img src="/static/img/articles/Actualizador DynDNS_1.png" class="img-responsive center-block" alt="-1-" width="500" height="346" />
+	</p>
+	
+	<p>&nbsp;</p>
+	<ul>
+		<li>INGRESAR USUARIO: 081bfQ-dyndynamicuser</li>
+	</ul>
+	<p>
+		 <img src="/static/img/articles/Actualizador DynDNS_2.png" class="img-responsive center-block"   width="500" height="346" />
+	</p>
+	<p>&nbsp;</p>
+	<ul>
+		<li>INGRESAR PASWORD: superR12 (puede requierir ingresarlo
+			nuevamente)</li>
+	</ul>
+	<p>
+		<img src="/static/img/articles/Actualizador DynDNS_3.png" class="img-responsive center-block"  width="500" height="346" />
+	</p>
+	<p>&nbsp;</p>
+	<ul>
+		<li>Nos dara una pregunta para utilizar checkip.dyndns.com para
+			verificar IP (seleccionamos SI o YES, segun sea el caso)</li>
+	</ul>
+	<p>
+		<img src="/static/img/articles/Actualizador DynDNS_4.png" class="img-responsive center-block"  width="500" height="346" />
+	</p>
+	<p>&nbsp;</p>
+	<ul>
+		<li>Metodo de seleccion de nombres (seleccionar De una lista y
+			dar enter, cargara los nombres a actualizar, con la tecla espaciadora
+			se coloca un asterisco indicando que se selecciono, dar enter para
+			confirmar.</li>
+	</ul>
+	<p>
+		<img src="/static/img/articles/Actualizador DynDNS_5.png" class="img-responsive center-block"  width="500" height="346" />
+	</p>
+	<p>&nbsp;</p>
+	<ul>
+		<li>Preguntara si desea ejecutar ddclient al establecer una
+			conexionPPP (seleccionamos NO y dar enter)</li>
+	</ul>
+	<p>
+		<img src="/static/img/articles/Actualizador DynDNS_6.png" class="img-responsive center-block"  width="500" height="346" />
+	</p>
+	<p>&nbsp;</p>
+	<ul>
+		<li>Preguntara si desea ejecutar ddclient como un demonio en el
+			arranque del sistema (seleccionar SI)</li>
+	</ul>
+	<p>
+		<img src="/static/img/articles/Actualizador DynDNS_7.png" class="img-responsive center-block"  width="500" height="346" />
+	</p>
+	<p>&nbsp;</p>
+	<ul>
+		<li>Ingresar el tiempo para la comprobacion de la direccion de
+			interfaz ( ejemplos: 5s (segundos), 3m (minutos), 7h (horas) o 1d
+			(dia)</li>
+	</ul>
+	<p>
+		<img src="/static/img/articles/Actualizador DynDNS_8.png" class="img-responsive center-block"  width="500" height="346" />
+	</p>
+	<p>&nbsp;</p>
+	<ul>
+		<li>Editar el archivo de configuracion (Con interfaz o Manual)</li>
+		<li>(Reconfigurar ddclient con Interfaz) en la consola de
+			comandos ingresar: sudo dpkg-reconfigure ddclient (nos aparesera la
+			interfaz para reconfigurar algun que se necesite modificar)</li>
+		<li>(Modificar el archivo de configuracion Manualmente) en la
+			consola de comandos ingresar: sudo leafpad /etc/ddclient.conf ( para
+			modificar el archivo de configuracion manualmente)</li>
+	</ul>
+</div>
+	<div>
+		<hr class="prettyline" />
+	</div> <!-- </html> -->

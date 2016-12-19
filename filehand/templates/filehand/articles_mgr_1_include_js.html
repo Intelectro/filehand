@@ -1,0 +1,300 @@
+<script>
+$(document).ready(function(){
+	// when you are adding a new option in a select field, enter must be disabled
+	$('body').bind('keypress', function(e){
+		if(e.keyCode == 13){
+			return false;
+		}
+	});
+    
+	var $popup1 = $('#popup1');
+	var $popup2 = $('#popup2');
+	
+	$('.articles-form div[id$="-file"]:not(:last)').hide();
+	
+	$('.articles-form input[id$="-file_name"]:not(:last)').attr("disabled", true);
+	
+	$('.articles-form input[id$="-DELETE"]:last').attr({"type":"text", "disabled":true}).css({"background-color":"transparent", "border-color":"transparent"});
+	// detect change in file upload input
+	// from input id_form-n-file make input id_form-n-file_name  
+	$(".articles-form").on("change", 'input[id$="-file"]', function() {
+	    var inputId = $(this).attr("id");
+	    var newInputId = inputId + "_name"
+		//alert('input -file changed, \ninput id = ' + inputId + '\nnew input id = ' + newInputId);
+	    var filename =  $(this)[0].files[0].name;
+	    $('#'+newInputId).val(filename);
+	});
+	
+	$('div.row').each(function(){
+		var $fileName = $('input[id^="id_form-"][id$="-file_name"]', this).val()
+		if( $fileName ) {
+			$this = $(this);
+			var $newFileName = $fileName.replace(/ /g, '~');
+			//window.alert('input[id$=-file_name]).val() with space replaced by ~ ' + $newFileName );
+			$this.html($this.html().replace("perro.html", $newFileName));
+			$this.html($this.html().replace("gato.html", $fileName));
+			$this.html($this.html().replace("pistol.html", $fileName));
+		}
+	});
+
+	// Set author to current user. If user is not superuser, disable
+	// ABOUT CHECKING IF INPUT FILE IS SELECTED http://stackoverflow.com/questions/16125255/how-i-know-if-my-input-file-has-content-selected
+	var loggedInUser = '';
+	try {
+		loggedInUser = {{ request.user.pk }};
+	}
+	catch(exc){
+		loggedInUser = '';
+	}
+	$( 'select[id$="-author"]:last' ).val(loggedInUser);
+	// if user is superuser then don't disable author field
+	if ( loggedInUser != 1 ) {
+		$( 'form .row' ).each(function(){
+			$(this).find('select[id$="-author"]').attr("disabled", true);
+		});
+	}
+
+	// auxiliary function to addOptionToSelect
+	function getUrl( view_name, parameter ) {
+		var tmp1 = window.location;
+		var tmp2 = tmp1.pathname.split('/')[1];
+		var to_return = '/' + tmp2 + '/' + view_name + '/' + parameter;
+		return to_return;
+	}
+	// In select field, if option selected is "+" add new option
+	// (+ must be an option present in the select field's options)
+	// add the value to the database too using $.get(
+	// set the new value as selected
+	function addOptionToSelect( origField, handlerFunction ) {
+        if ($(origField).find("option:selected").text() == '+') {
+			tempDiv = jQuery('<div id="id_temp_hold_select" style="display:none"></div>');		    
+		    $("body").append(tempDiv);	            
+        	$(origField).clone().appendTo("#id_temp_hold_select");
+            $(origField).replaceWith('<input type="text" name="temp" id="id_temp_input" style="height: 2.2em; font-size: .8em; width:100%;">');
+            $('#id_temp_input').focus();
+            $('#id_temp_input').on("blur",  function() {
+				var content1 = $('#id_temp_input').val();
+				var content2 = $.trim(content1);
+        		var regex = new RegExp("^[a-zA-Z][\w]*");
+        		if(regex.test(content2)) {
+        		    content2 = content2.charAt(0).toUpperCase() + content2.substr(1); // capitalize first character
+					var get_url = getUrl(handlerFunction, content2);
+	 				$.get(get_url, function(data, status){
+			        	$("#id_temp_hold_select select").empty();
+			        	$("#id_temp_hold_select select").append(data);
+			        	var optionToSet = $("#id_temp_hold_select select option").filter(function () { return $(this).html() == content2; }).val();
+			        	//window.alert('\noptionToSet = ' + optionToSet + ' \ncontent = ' + content);
+		        		$("#id_temp_hold_select select").val( optionToSet );
+		        		$("#id_temp_input").replaceWith($("#id_temp_hold_select select"));
+		        		jQuery("#id_temp_hold_select").remove();
+			 		})
+			 		.fail(function() {	// bad
+						$("#id_temp_input").replaceWith($("#id_temp_hold_select select"));
+						jQuery("#id_temp_hold_select").remove();
+				    	alert( "\nError al obtener datos\npara poblar opciones del campo clas" );
+				  	});
+        		} else {
+        		    alert("\nInvalido");
+	        		$("#id_temp_input").replaceWith($("#id_temp_hold_select select"));
+	        		jQuery("#id_temp_hold_select").remove();
+				}
+			});
+		}
+	}
+	// when this select field changes check if new option is to be added and if so, add
+	$(".articles-form").on("change", 'select[id$="-clas"]', function() {
+		var origField	= this;
+		var handlerFunction = "add_clas_get_options";
+		addOptionToSelect(origField, handlerFunction);
+	});
+	// when this select field changes check if new option is to be added and if so, add
+	$(".articles-form").on("change", 'select[id$="-subClas"]', function() {
+		var origField	= this;
+		var handlerFunction = "add_subClas_get_options";
+		addOptionToSelect(origField, handlerFunction);
+	});
+	// when this select field changes check if new option is to be added and if so, add
+	$(".articles-form").on("change", 'select[id$="-docType"]', function() {
+		var origField	= this;
+		var handlerFunction = "add_docType_get_options";
+		addOptionToSelect(origField, handlerFunction);
+	});
+
+	// permissions form submit 
+	$(".articles-form").on("click", "input#submit-id-submit", function(ev){
+		// enable author before submitting form else this field is not submitted
+		$( 'form .row' ).each(function(){
+			$(this).find('select[id$="-author"]').attr("disabled", false);
+			$(this).find('input[id$="-file_name"]').attr("disabled", false);
+		});
+		// if no file selected for upload then clear autopopulated author field
+		// so as to not get a "required field error"
+		if ( $( 'select[id$="-author"]:last' ).val() != '' ) {
+			if ( $( 'input[id$="-file"]:last').val() == '' ) {
+				$( 'select[id$="-author"]:last' ).val('');
+			}
+		}
+	});
+	//
+	// MODAL POPUP USED TO DISPLAY INFO ON THE CURRENT PAGE
+	//
+	$(".Site").on("click", "a.fa-info-circle", function(ev){
+		var $link = $(this);
+		var popup_url = $link.data('popup-url');
+	    if (!popup_url) {
+	    	window.alert("No popup_url given");
+	        return true;
+	    }
+	    $('#popup1').modal({
+			backdrop: 'static',
+			keyboard: false
+		});
+		// http://api.jquery.com/load/
+	    $('.modal-body-alt', $popup1).load( popup_url, function(data, status) {
+	        $popup1.on('shown.bs.modal', function () {
+	        }).modal("show");
+	    });
+    	$('.popup1class.close', $popup1).click(function() {
+	    	// do something when dialog is closing
+	    });
+	    $('#popup1-close-modal', $popup1).click(function() {
+    		// do something when dialog is closing
+    	});
+	    return false; // disable default link functionality
+	});
+	
+	// http://stackoverflow.com/questions/21015719/shown-bs-modal-fires-multiple-times-when-you-close-and-reopen-modal
+	// http://stackoverflow.com/questions/14451052/in-twitter-bootstrap-how-do-i-unbind-an-event-from-the-closing-of-a-modal-dialo
+	// https://www.bennadel.com/blog/2390-tracing-event-binding-and-event-triggering-in-jquery.htm
+	//
+	//	MODAL POPUP THAT SHOWS THE FORM WHERE IMAGES ARE UPLOADED / DELETED
+	//
+	//$(".Site").on("click", "a.fa-picture-o", function(ev){
+	  $(".Site").on("click", "a.fa-file-image-o", function(ev){
+		ev.preventDefault(); // prevent navigation	USELESS?
+		var $link = $(this);
+		var popup_url = $link.data('popup-url');
+	    var popup_title = $link.data('popup-title');
+	    if (!popup_url) {
+    		window.alert("No popup_url given");
+        	return true;
+    	}
+    	//window.alert("\npopup_url = " + popup_url);
+    	$('.modal-title', $popup2).html(popup_title);
+    	
+    	// prevent clicking outside the popup or pressing a key from making the modal go away
+    	$('#popup2').modal({
+			backdrop: 'static',
+			keyboard: false
+		});
+    	$('.modal-body-p2', $popup2).load( popup_url, function() {
+	        $popup2.on( 'shown.bs.modal', function () {
+	        	treatLoad();
+	        	$(this).off('shown.bs.modal'); // prevents treatLoad() from running twice when you open the modal twice, or 3 when 3 ... 
+        	}).modal("show");
+    	});
+    	$('.popup2class.close', $popup2).click(function() {
+    		//window.alert('\n* C L O S I N G   M O D A L * \n(.popup2class.close, $popup2).click(function() {');
+    		$('.popup2class.close').off('click');
+	    });
+	    $('#popup2-close-modal', $popup2).click(function() {
+           	//alert('closing-modal');
+           	$("button.btn-link").popover('hide'); // if the popover in articleImagesUpload is open when modal closes, hide it, else it stay shown after modal gone
+           	$(".modal-body-p2").remove();
+           	$("#popup2 #modal-control").append("<div class='modal-body-p2'></div>");
+           	$('#popup2-close-modal').off('click');
+    	});
+    	return false; // disable default link functionality	    
+	});
+	//
+	// CODE THAT HANDLES THE IMAGE HANDLING FORM ONCE LOADED, BEGIN
+	//
+	//http://stackoverflow.com/questions/20822823/django-jquery-ajax-file-upload
+	function gofor( popup_url ) { 
+	    var dialog = $(this),
+	        options = {
+	            url: popup_url,
+	            type: 'POST',
+	            success: function(data, status) {
+	            	//window.alert('SUCCESS: data = ' + data + ' status = ' + status);
+	            	//$(".modal-body-p2").empty();
+	            	$(".modal-body-p2").remove();
+	            	//$('#ajax_form_modal_result').empty();
+	            	$("#popup2 #modal-control").append("<div class='modal-body-p2'></div>");
+	            	$(".modal-body-p2").html(data);
+	            	$('.modal-body-p2 .images-form div[id$="-file"]:not(:last)').hide();
+	            	//window.alert(response);
+	            	treatLoad();
+	                },
+	            error: function(data, status) {
+	            	//window.alert('ERROR: data = ' + data + ' status = ' + status);
+	            	$(".modal-body-p2").html(data);
+	            	$('.modal-body-p2 .images-form div[id$="-file"]:not(:last)').hide();
+	            	//window.alert(response);
+	            	treatLoad();
+	                }
+	            };
+	    $('#ajax_form_modal_result').ajaxSubmit(options);
+	}
+	//
+	//CODE THAT HANDLES THE IMAGE HANDLING FORM ONCE LOADED, END
+	//
+	
+	//
+	//	THINGS TO DO WHEN THE IMAGE HANDLING FORM OPENS AND RELOADS
+	//
+	function treatLoad(){
+		$('.modal-body-p2 .images-form div[id$="-file"]:not(:last)').hide();
+		try {
+			var $articleP = $(".modal-body-p2 input#articleProcessedHolder").val();
+			//window.alert("treatLoad Article being processed =" + $articleP);
+			var $newArticleP = $articleP.replace(/ /g, '~');
+			//window.alert("newarticlep =" + $newArticleP);
+			var attribute = $(".modal-body-p2 input#modal-form-submit").data("popupUrl");
+			//window.alert("attribute before replace=" + attribute);
+			attribute = attribute.replace(/%20/g, $newArticleP);
+			
+			//window.alert("attribute after replace=" + attribute);
+			
+			$(".modal-body-p2 input#modal-form-submit").data("popupUrl", attribute );
+			//var attributeTest = $(".modal-body-p2 input#modal-form-submit").data("popupUrl");
+		}
+		catch(exc){
+			//window.alert("treatLoad E X C E P T I O N  No se pudo armar el URL");
+			window.alert("Selecciona un artículo");
+		}
+		
+		$(".modal-body-p2").on("click", "#modal-form-submit", function() {
+			//window.alert('CLICK');
+			var $link = $(this);
+			var popup_url = $link.data('popup-url');
+			//$(".modal-body-p2").unbind("click");
+			gofor(popup_url);
+		});
+	}
+	
+	// Tooltips: https://jqueryui.com/tooltip/
+	$( function() {
+		$( document ).tooltip();
+		$( ".ttip1" ).tooltip({
+			position: { my: "center top-16", at: "center top-10", of: ".ttip1" }
+		});
+		$( ".ttip2, .ttip3, .ttip4, .ttip5, .ttip6" ).tooltip({
+			position: { my: "center top-16", at: "center top-10", collision: "none" }
+		});
+	  
+	  // http://stackoverflow.com/questions/21459042/can-i-use-dynamic-content-in-a-bootstrap-popover
+	  var content = $('[id*="id-msg"]');
+	  var title = $('[id*="id-popover-title"]');
+	  $('[data-toggle="popover"]').popover({
+	      html: true,
+	      content: function () {
+	          return content.html();
+	      },
+	      title: function() {
+	        return title.html();
+	      }
+	  });
+	});	
+});
+</script>

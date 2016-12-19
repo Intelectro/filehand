@@ -1,0 +1,132 @@
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+<script>
+	/*
+	// Tooltips: https://jqueryui.com/tooltip/
+	$( function() {
+		$( document ).tooltip();
+		$( ".ttip1" ).tooltip({
+			position: { my: "center top-24", at: "center top-24", of: ".ttip1" }
+		});
+		$( ".ttip2, .ttip3, .ttip4, .ttip5, .ttip6" ).tooltip({
+			position: { my: "left top-24", at: "center top-24", collision: "none" }
+		});
+	});
+	*/
+	// http://stackoverflow.com/questions/21459042/can-i-use-dynamic-content-in-a-bootstrap-popover
+	var content = $('[id*="id-msg1"]');
+	var title = $('[id*="id-popover-title1"]');
+	$('[data-toggle="popover1"]').popover({
+	 //container: "#popover-container",
+	 trigger: "click",
+	 	placement: "bottom",
+	    html: true,
+	    content: function () {
+	        return content.html();
+	    },
+	    title: function() {
+	      return title.html();
+	    }
+	});
+</script>
+
+{% if title %} <div id = 'form-title' class = 'text-md-center'> <h5>{{ title }}</h5> </div> {% endif %} 
+<p class="clearfix">
+	<div class = "top-form">
+
+		<div class='row' style='height:36px; margin:-24px 0 0 42px;'>
+			{% if msg > '0' or imagesInArticleHtml or imagesAlreadyUploaded %}
+					 
+				{% if formset.total_error_count %}
+					<button type="button" class="btn-link" data-toggle="popover1" title-disable="if not -disabled"
+					data-HTML="popover content if not overridden by js function" style="color:#a94442; font-weight:bold">{% trans 'Atención:' %}
+					</button>
+				{% else %}
+					<button type="button" class="btn-link" data-toggle="popover1" title-disable="if not -disabled"
+					data-HTML="popover content if not overridden by js function" style="color:darkgreen; font-weight:bold">Info:
+					</button>
+				{% endif %}
+
+			{% endif %}
+		</div>
+		
+		{% if formset %}
+			{% crispy formset helper %}
+		{% else %}
+			<div class="row">
+	            <div class="btn-group pull-right" style="margin-right: 15px; margin-bottom:-12px;">
+					<input id="return-id-return" class="close-modal btn btn-primary" data-dismiss="modal" type="return" value="Regresar" name="Regresar"></input>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</p>
+
+{% if articleProcessed %} 
+	<input class="articleProcessedHolder" id="articleProcessedHolder" type="hidden" value= "{{ articleProcessed }}" >
+{% endif %}
+
+{# <!-- ========================================================================================== --> #}
+{# <!-- messages to display through a popover like what changes were made or what errors there are --> #}
+<div style='display:none'> {# not displayed because it'll be shown in a popup #}
+	<!-- <div id="popover-container" style="min-width:200px"> -->
+		{# <div id='id-popover-title1'>{% trans 'Mensajes:' %}</div> #}
+		
+		<div id='id-msg1'>
+		
+			{% if msg %}<p style='color: darkgreen; font-weight: bold; text-align:left'>{{ msg|safe }}</p>{% endif %}
+			
+			{% if formset.total_error_count %}
+				<div class="errorList" style="color:#A94442; margin:-6px 0 0 6px">
+					{% trans "Errores:" %} &nbsp; 
+			    	{% for dict in formset.errors %} {% for error in dict.values %}
+			        	{{ error }}
+			        {% endfor %} {% endfor %}
+			    </div>
+			{% endif %}
+			
+			{% if articleProcessed %}
+				<div class='articleProcessed' style='height:auto'>
+					<div style="padding:6px 0 0 0; font-weight:bold;">
+						Artículo Procesado:
+					</div>
+					<div style="padding:0 0 0 12px">
+						{{ articleProcessed }}
+					</div>
+				</div>
+			{% endif %}	
+			
+			{% if imagesInArticleHtml %}
+				<div class='images-in-article' style='height:auto'>
+					<div style="padding:6px 0 0 0; font-weight:bold;">
+						Imágenes usadas en el artículo:
+					</div>
+					<div style="padding:0 0 0 12px">
+						{% for x in imagesInArticleHtml %}
+							{{ x }}
+							{% if not forloop.last %} , {% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
+				
+			{% if imagesAlreadyUploaded %}
+				<div class='images-already-uploaded' style='height:auto'>
+					<div style="padding:6px 0 0 0; font-weight:bold;">
+						Imágenes ya subidas:
+					</div>
+					<div style="padding:0 0 0 12px">
+						{% for x in imagesAlreadyUploaded %}
+							{{ x.file_name }}
+							{% if not forloop.last %} , {% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
+		
+		</div>
+	<!-- </div> -->
+</div>
+{# <!-- ========================================================================================== --> #}

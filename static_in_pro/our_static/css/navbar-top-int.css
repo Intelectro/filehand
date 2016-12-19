@@ -1,0 +1,92 @@
+/*
+160208jaef from view-source:http://getbootstrap.com/examples/navbar-static-top/navbar-static-top.css
+*/
+
+/* .navbar-static-top, .navbar-fixed-top {margin-bottom: 0px;background-color: #F2E000} */
+.navbar-static-top, .navbar-fixed-top {margin-bottom: 0px;background-color: #000040}
+
+.navbar-fixed-top {margin-bottom: 50px}
+
+.navbar-fixed-top .container { margin-top: 0px }
+
+/* .container-fluid {margin-top: 100px;} if using navbar-fixed-top */
+/* .container { margin-top: 50px }  USE IF YOU DO navbar-fixed-top */
+
+/*.navbar-default {border-color: #D5C500}*/
+.navbar-default {border-color: #1705fa}
+
+.navbar-brand {
+    float: left;
+    height: 50px;
+    padding-top: 3px;
+    padding-left: 15px;
+    padding-bottom: 1px;
+    padding-right: 15px;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+/*.navbar-default .navbar-brand, .navbar-default .navbar-nav > li a {color: #000}*/
+.navbar-default .navbar-brand, .navbar-default .navbar-nav > li a {color: #ffffff; font-weight:bolder;}
+
+/*.navbar-default .navbar-brand:hover, .navbar-default .navbar-nav > li > a:hover {color: #6E6E6E}*/
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-nav > li > a:hover {color: #cacaca}
+
+/*.navbar-default .navbar-brand:active, .navbar-default .navbar-nav > li > a:active {color: navy}*/
+.navbar-default .navbar-brand:active, .navbar-default .navbar-nav > li > a:active {color: navy}
+.navbar-default .navbar-nav > li > a.signup:active {color: white}
+/*
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+	color: #4F4F00;
+    background-color: #F2E000;
+}
+*/
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+	color: #ffffff;
+    background-color: #1705fa;
+}
+
+/*.dropdown-menu {background-color: #D1C01F}*/
+.dropdown-menu {background-color: #13244A}
+
+.dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {background-color: #1705fa}
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:focus, .dropdown-menu > .active > a:hover {background-color: #1705fa}
+/*
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .open > a:hover {
+    color: #44B78B;
+    background-color: #D1C01F;
+}
+*/
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .open > a:hover {
+    color: #44B78B;
+    background-color: #1705fa;
+}
+/*
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+	color: #555;
+	background-color: #D1C01F;
+}
+*/
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+	color: #ffffff;
+	background-color: #1705fa;
+}
+.dropdown-header {color: #fff}
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:focus, .dropdown-menu > .active > a:hover {background-color: #1705fa}
+
+.modal .control-label{text-align:left}
+/* THIS CODE PREVENTS TOP NAVBAR DROPDOWN MENU ITEM BACKGROUND FROM GOING GREY WHEN TOGGLED ON BACKGROUND  */
+/* IT IS HANDLED BY BOOTSTRAP.MIN.CSS. IT WORKS WHEN PLACED IN CUSTOM.CSS */
+/* DOES NOT WORK HERE */
+/* .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover { */
+/* 	color: #555 !important; */
+/* 	/*background-color: #e7e7e7 160310jaef */ */
+/* 	background-color: transparent !important; */
+/* } */

@@ -1,0 +1,44 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		{# <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags --> #}
+		<meta name="description" content="Development">
+		<meta name="author" content="JAEF">
+		<link rel="icon" href='{% static "img/favicon.ico" %}'>
+		{# <title>{% block head-title %} Cronotaxi {% endblock %}</title> #}
+	    <title>Intelectro - {% block head_title %} Development 1 {% endblock %}</title>
+		{% include 'head-css.html' %}
+		{# <!-- js should be put after page loading so it will not introduce delay --> #}
+		{% include 'javascript.html' %}
+		
+		{% block js %} {% endblock %}
+		
+		{% block style %} {% endblock %}
+	
+	</head>
+
+	<body class="Site">
+	
+		{% include 'navbar.html' %}
+		
+		<div class="container_fluid Site-content">
+
+			{% block jumbotron %} {% endblock %}
+				
+			{% block content %} {% endblock %}
+		
+		</div>
+		   
+		{# <!-- Opening object details in a pop up --> #}
+		{% block extrabody %} {% endblock %}
+		   
+		{% include 'footer.html' %}
+	
+	</body>
+	
+</html>

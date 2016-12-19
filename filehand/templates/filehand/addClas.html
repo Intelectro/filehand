@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head_title %}Welcome X | {{ block.super }}{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<p class='lead' style='margin-top:24px'>{{ title }}</p>
+	<div class="row">
+			{% if form %}
+				{% for instance in queryset %}
+				<div class='row' style='margin: 6px 0 6px 30px'>
+					<div class='col-sm-1' style=''> {{ instance.code }} </div>
+					<div class='col-sm-3' style=''>	{{ instance.name }} </div>
+				</div>
+				{% endfor %}
+				{% crispy form %}
+			{% endif %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{# <!-- Ref. https://automatetheboringstuff.com/chapter8/ --> #}
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% load custom %} {# templatetags/custom #}
+{% block head_title %} Welcome X | {{ block.super }} {% endblock %}
+
+{% block js %}
+<script src="{% static '__jquery.tablesorter/jquery.tablesorter.min.js' %}"></script>
+<script>
+$(document).ready(function(){
+	$("#sortabletable").tablesorter(); // tablesorter.com
+});
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+table > thead > tr > th.header {cursor: pointer;}
+</style>
+{% endblock %}
+
+{% localize on %}
+{% block content %}
+	<div class="container">		
+		<div class="row">
+			<div class ='col-sm-18'>
+				{# {% if request.user.is_authenticated %} #}
+					<h4 class="page-title text-xs-center" style="margin:18px 0 12px 0">{{title}}</h4>
+					{% if data %}
+						<table id='sortabletable' class='table tablesorter table-striped'>
+							<thead class='thead-inverse'>
+								<tr>
+									<th id = "Clas1">Clas 1</th>
+									<th id = "Clas2">Clas 2</th>
+									<th id = "Clas3">Clas 3</th>
+									<th id = "Titulo">Titulo</th>
+									<th id = "Editar">Editar</th>
+								</tr>
+							</thead>
+							{% for datum in data %}
+								<tr>
+									<td headers="Clas1">{{ datum.0 }}</td>
+									<td headers="Clas2">{{ datum.1 }}</td>
+									<td headers="Clas3">{{ datum.2 }}</td>
+									<td headers="Titulo">
+										<a class="link" href="{% url 'article_display' datum.3 'X' %}"> &nbsp; <i class="fa fa-file-o" aria-hidden="true"></i> &nbsp; {{ datum.4 }} </a>
+										{# datum 3 is the complete file name of an article like IN-DJ-DO-Setting Up An Existing Django Project At Localhost In Windows.html #}
+										{# datum 4 is the article's title like Setting Up An Existing Django Project At Localhost In Windows #}
+									</td>
+									<td headers="Editar">
+										<a class="link" href="{% url 'articleEdit' datum.3 'X' %}"> &nbsp; <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </a>
+									</td>
+								</tr>
+							{% endfor %}
+						</table>
+					{% endif %}
+				{# {% endif %} #}
+			</div>
+		</div>
+	</div>
+{% endblock content %}
+{% endlocalize %}
+
+{# <div> {{ datum.2 }} {{ datum.3 }} {{ datum.4 }} <a class="fa fa-file-text-o" href="{% url 'article_display' datum.0 %}"> {{ datum.1 }} </a> <br>	</div> #}

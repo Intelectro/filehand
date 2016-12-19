@@ -1,0 +1,84 @@
+{% load staticfiles %}
+{% load custom %} {# templatetags/custom #}
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container">
+  
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+
+      <!-- <a class="navbar-brand" href="/" > <img src="{% static 'img/cronotaxi_title.jpg' %}" /> </a> -->
+       <a class="navbar-brand" style="padding-top:8px" href="/" > <img src="{% static 'img/intelectro_white_navbar.jpg' %}"  height="29" width="192" /> </a> 
+    </div>
+    
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        
+        <li {% if 'about' in request.path %}class="active"{% endif %}> <a href="{% url 'about' %}">About</a></li> {# <!-- you can also pass variables to the html page  --> #}
+
+	    <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Folios <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li {% if 'lista' in request.path %}class="active"{% endif %}> <a href="/filehand/lista.html">Upload Image</a> </li>						
+	    			<li {% if 'receipt_create' in request.path %}class="active"{% endif %}> <a href="{% url 'receipt_create' %}">Crear</a> </li>
+	    			<li {% if 'receipt_list' in request.path %}class="active"{% endif %}> <a href="/cronosales/receipt_list.html">Listar</a> </li>		     			
+				<li role="separator" class="divider"> </li>
+				<li class="dropdown-header"> En Proceso </li>
+				<li {% if 'receipts_view' in request.path %}class="active"{% endif %}> <a href="{% url 'receipts_view' %}">receipts_view</a> </li>
+			</ul>
+		</li>
+	 			
+        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+			<li {% if 'home' in request.path %}class="active"{% endif %}><a href="/home.html">Home</a></li> <!-- takes you to http://localhost:8000/home -->
+			<li {% if 'example' in request.path %}class="active"{% endif %}><a href="/example-fluid.html">Example</a></li>
+			<li {% if 'sample' in request.path %}class="active"{% endif %}><a href="/sample.html">Sample</a></li>
+
+			<li role="separator" class="divider"></li>
+			<li class="dropdown-header">Nav header</li>
+			<li {% if 'contact' in request.path %}class="active"{% endif %}><a href="/contact.html">Contact</a></li>
+			<li {% if 'tests_general' in request.path %}class="active"{% endif %}><a href="/tests_general.html">Tests General</a></li>
+
+			<li role="separator" class="divider"></li>
+			<li class="dropdown-header">Dev Tests</li>
+			<!-- <li {% if 'regex' in request.path %}class="active"{% endif %}><a href="/devtests/regex.html">Regular expressions</a></li> -->
+			<li {% if 'regex' in request.path %}class="active"{% endif %}><a href="{% url 'regex' %}">Regular expressions</a></li>
+			<li><a href="{% url 'auth_logout' %}">Salir</a></li>
+          </ul>
+        </li>
+      </ul>
+
+	<ul class="nav navbar-nav navbar-right">
+		{% if not request.user.is_authenticated %}
+			<li><a href="#signup" class="signup" data-toggle="modal" data-target=".bs-modal-sm">Sign In/Register</a></li>
+		{% else %}
+			{# <li style='padding-left:280px; line-height:3.6; color: #000;'>Usuario: {{ request.user|employee_first_name }} </li> #}
+			<li><a href="{% url 'user' %}">Hola {{ request.user|employee_data:'first_name' }} </a></li>
+			<li><a href="{% url 'auth_logout' %}">Salir</a></li>
+		{% endif %}
+		</ul>
+      
+
+
+    </div> {# <!-- <div class="collapse navbar-collapse" id="myNavbar">  --> #}
+  </div> {# <!-- <div class="container"> --> #}
+</nav>
+
+{% include 'navbar_inc_modal_login.html' %}
+
+{% comment %}
+			{% if request.user.is_authenticated %}
+			<ul class="nav navbar-nav navbar-left">
+				<li style='padding-left:280px; line-height:3.6; color: #000;'>Usuario: {{ request.user }}</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="{% url 'auth_logout' %}">Salir</a></li>
+			</ul>
+			{% else %}
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="{% url 'registration_register' %}">Registrarse</a></li>
+			</ul>
+			{% endif %}
+{% endcomment %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load staticfiles %}
+{% load humanize %}
+<!-- {# load widget_tweaks #} -->
+{% block head_title %} Welcome X | {{ block.super }} {% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function(){
+	//$(".Site").on("click", "a.fa-times", function(){
+	    /*
+	    try {
+			alert('caller = ' + {{ caller }} )
+	    }
+	    catch(exc){
+			alert('caller = ERROR WHEN TRYING TO ACCESS')
+	    }
+	    */
+		//window.top.close();
+	//});
+	$(".fa-times").click(function(){
+	    window.top.close();
+	});
+});
+</script>
+{% endblock js %}
+
+{% block style %}
+{# Ref. http://www.w3schools.com/css/css3_multiple_columns.asp #} 
+<style>
+
+/* @media screen and (max-width: 1295px) { #back-previous{display:none} } */
+
+.page-header{margin:24px 0 12px 0; text-align:center}
+
+.newspaper_1 {}
+
+.newspaper_2 {
+    -webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+}
+
+.newspaper_3 {
+    -webkit-column-count: 3; /* Chrome, Safari, Opera */
+    -moz-column-count: 3; /* Firefox */
+    column-count: 3;
+}
+
+.newspaper_2, .newspaper_3 {
+    -webkit-column-gap: 40px; /* Chrome, Safari, Opera */
+    -moz-column-gap: 40px; /* Firefox */
+    column-gap: 40px;
+    
+    -webkit-column-rule: 1px solid lightgrey; /* Chrome, Safari, Opera */
+    -moz-column-rule: 1px solid lightgrey; /* Firefox */
+    column-rule: 1px solid lightgrey;
+}
+
+code {
+    color: navy;
+    background-color: #f7f7f9;
+    padding:0;
+}
+.indent-1{margin-left:24px}
+.font-1{font-size:smaller; line-height:1.1}
+/* a:hover {text-decoration:none; color:black!important;} */
+</style>
+{% endblock %}
+
+{% block content %}
+	{# caller is a context variable used to know what page called this page #}
+	{% ifequal caller "ArticlesMgr" %}
+		<style>	.navbar .container{visibility:hidden} </style>
+		<a href="" id="back-previous" class="fa fa-times fa-2x" style='float:left; margin: 36px 0px 0px 36px; color:lightgrey; position:fixed; z-index: 999;'></a>
+		<a href="" id="back-previous" class="fa fa-times fa-2x" style='float:right; margin: 36px 36px 0px 0px; color:lightgrey; position:relative; z-index: 999;'></a>		
+	{% else %}
+		<a href="{% url 'articlesWithPermissionList' %}" id="back-previous" class="fa fa-chevron-left fa-2x" style='float:left; margin: 36px 0px 0px 36px; color:lightgrey; position:fixed; z-index: 999;'></a>
+		<a href="{% url 'articlesWithPermissionList' %}" id="back-previous" class="fa fa-chevron-left fa-2x" style='float:right; margin: 36px 36px 0px 0px; color:lightgrey; position:relative; z-index: 999;'></a>
+	{% endifequal %}
+	
+{% localize on %}
+
+	<div class="container">
+		<div class="row">
+			<div class ='col-sm-18'>
+				{# {{ caller }} #}
+				{{ article_contents|safe }} {# safe enables output as HTML #}
+			</div>
+		</div>
+	</div>	
+{% endlocalize %}
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load staticfiles %}
+{% load humanize %}
+<!-- {# load widget_tweaks #} -->
+{% block head_title %} Welcome X | {{ block.super }} {% endblock %}
+
+{% block js %}
+
+<script type="text/javascript" src="{% static 'tinymce_4.4.3/js/tinymce/tinymce.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'static/tinymce_4.4.3/js/tinymce/langs/es.js' %}"></script>
+
+<script>
+/*
+tinymce.init({
+    selector: '#article-contents',
+    language: 'es',
+    nowrap : true,
+    inline: true,
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table contextmenu paste code colorpicker'
+    ],
+    toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+    force_p_newlines: true,
+    force_br_newlines: true
+    //content_css: '//www.tinymce.com/css/codepen.min.css'
+  });
+  */
+  /*
+tinymce.init({
+    selector: 'h2.editable',
+    inline: true,
+    toolbar: 'undo redo',
+    menubar: false
+  });
+*/
+  tinymce.init({
+    selector: '#article-contents',
+    inline: true,
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table contextmenu paste textcolor'
+    ],
+    toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | '
+    + 'bullist numlist outdent indent | link image | forecolor backcolor | fontselect fontsizeselect'
+  });
+</script>
+<script>
+$.noConflict();
+jQuery(document).ready(function(){
+	var popup1 = jQuery('#popup1');
+	//
+	// MODAL POPUP USED TO DISPLAY INFO ON THE CURRENT PAGE
+	//
+	jQuery(".Site").on("click", "a.fa-info-circle", function(ev){
+		var link = jQuery(this);
+		var popup_url = link.data('popup-url');
+	    if (!popup_url) {
+	    	window.alert("No popup_url given");
+	        return true;
+	    }
+	    jQuery('#popup1').modal({
+			backdrop: 'static',
+			keyboard: false
+		});
+		// http://api.jquery.com/load/
+	    jQuery('.modal-body-alt', popup1).load( popup_url, function(data, status) {
+	        popup1.on('shown.bs.modal', function () {
+	        }).modal("show");
+	    });
+	jQuery('.popup1class.close', popup1).click(function() {
+	    });
+	    jQuery('#popup1-close-modal', popup1).click(function() {
+	});
+	    return false; // disable default link functionality
+	});
+	
+	jQuery(".Site").on("click", "a.fa-times", function(){
+		window.top.close();
+	});
+
+    /*
+	// ADD TINYMCE CONTROLS TO THE DIV CONTAINING DATA TO EDIT
+	// Done automatically when user clicks the editable area
+	jQuery("form#tinymceformid").on("click", "input#abrir", function(){
+		tinyMCE.execCommand('mceAddControl', false, 'article-contents');
+	});
+	// REMOVE TINYMCE CONTROLS FROM THE DIV CONTAINING DATA TO EDIT
+	// Done automatically when user clicks outside the editable area
+	jQuery("form#tinymceformid").on("click", "input#cerrar", function(){
+		tinyMCE.execCommand('mceRemoveControl',false,'article-contents');
+	});
+	*/
+	// BEFORE SUBMITTING, REMOVE TINYMCE CONTROLS FROM THE DIV CONTAINING EDITED DATA
+	// AND PLACE EDITED DATA IN FORM FIELD FOR POSTING
+	// AND PLACE FILE NAME IN FORM FIELD FOR POSTING 
+	jQuery("form#tinymceformid").on("click", "input#guardar", function(){
+	    //alert("article-contents = " + jQuery("#article-contents").html());
+		tinyMCE.execCommand('mceRemoveControl',false,'article-contents');
+		jQuery("input#id_dummyField").val('');
+		jQuery("input#id_dummyField").val(jQuery("#article-contents").html());
+		jQuery("input#id_fileName").val('');
+		jQuery("input#id_fileName").val(jQuery("div#id_fileName").html());
+		return true;
+	});
+});
+</script>
+{% endblock js %}
+
+{% block style %}
+{# Ref. http://www.w3schools.com/css/css3_multiple_columns.asp #} 
+<style>
+/*@media screen and (max-width: 1295px) { #back-previous{display:none} }*/
+
+.page-header{margin:24px 0 12px 0; text-align:center}
+
+.newspaper_1 {}
+
+.newspaper_2 {
+    -webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+}
+
+.newspaper_3 {
+    -webkit-column-count: 3; /* Chrome, Safari, Opera */
+    -moz-column-count: 3; /* Firefox */
+    column-count: 3;
+}
+
+.newspaper_2, .newspaper_3 {
+    -webkit-column-gap: 40px; /* Chrome, Safari, Opera */
+    -moz-column-gap: 40px; /* Firefox */
+    column-gap: 40px;
+    
+    -webkit-column-rule: 1px solid lightgrey; /* Chrome, Safari, Opera */
+    -moz-column-rule: 1px solid lightgrey; /* Firefox */
+    column-rule: 1px solid lightgrey;
+}
+
+code {
+    color: navy;
+    background-color: #f7f7f9;
+    padding:0;
+}
+.indent-1{margin-left:24px}
+.font-1{font-size:smaller; line-height:1.1}
+/* a:hover {text-decoration:none; color:black!important;} */
+</style>
+{% endblock %}
+
+{% block content %}
+
+	{# caller is a context variable used to know what page called this page #}
+	{% ifequal caller "ArticlesMgr" %}
+		<style>	.navbar .container{visibility:hidden} </style>
+		<a href="" id="back-previous" class="fa fa-times fa-2x" style='float:left; margin: 36px 0px 0px 36px; color:lightgrey; position:fixed; z-index: 999;'></a>
+		<a href="" id="back-previous" class="fa fa-times fa-2x" style='float:right; margin: 36px 36px 0px 0px; color:lightgrey; position:relative; z-index: 999;'></a>	
+	{% else %}
+		<a href="{% url 'articlesWithPermissionList' %}" id="back-previous" class="fa fa-chevron-left fa-2x" style='float:left; margin: 36px 0px 0px 36px; color:lightgrey; position:fixed; z-index: 999;'></a>
+		<a href="{% url 'articlesWithPermissionList' %}" id="back-previous" class="fa fa-chevron-left fa-2x" style='float:right; margin: 36px 36px 0px 0px; color:lightgrey; position:relative; z-index: 999;'></a>
+	{% endifequal %}
+	
+{% localize on %}
+	<div class="container">
+	
+		<div class="row">
+		
+			{# <!-- THE TITLE OF THE PAGE (LIKE "EDIT FILE ") AND THE NAME OF THE FILE BEING PRESENTED FOR EDITING --> #}
+			<div id="title" class ="col-sm-18">
+				<h5 class="page-title text-xs-center" style="margin:12px 0 0 0">
+				{% if title %} {{ title }} {% endif %} {% if file %} {{ file }} {% endif %}
+				<a class="fa fa-info-circle" style="margin:-6px 0 0 6px" data-toggle="modal" href="equis" data-popup-url="/filehand/modalinfo/info_article_edit" 
+			   data-target="#modal" data-popup-title="" title="Info" tabindex="-1"></a>
+			   </h5>
+			</div>
+		
+			{# <!-- CONTENTS OF THE FILE TO BE PRESENTED FOR EDITING --> #}
+			<div id="article-contents" class ="col-sm-18">
+				{{ article_contents|safe }} {# safe enables output as HTML #}
+			</div>
+			
+			{# <!-- THE FORM USED TO POST THE EDITED CONTENTS AND THE NAME OF THE FILE PRESENTED FOR EDITING --> #}
+			{% if form %}
+			<form id="tinymceformid" method="POST" action = "{% url 'articleEdit' file 'X' %}">
+				{% csrf_token %}
+					<span style="display:none">{{ form.dummyField }}</span>
+					<span style="display:none">{{ form.fileName }}</span>
+				<div class="col-lg-2"></div>
+				<input id="guardar" class='btn btn-primary col-lg-2' style="margin:12px" type='submit' value='Guardar'/>
+			</form>
+			{% endif %}
+			
+		</div>
+		
+		{# <!-- A HIDDEN DIV USED TO HOLD THE FILE NAME. THE FILE NAME IS COPYED FROM HERE TO THE A FORM FIELD TO BE POSTED --> #}
+		<div id="id_fileName" style="display:none">{{ file }}</div>
+
+	</div>	
+{% endlocalize %}
+{% endblock %}
+
+{% block extrabody %}
+{# <!-- modal popup window --> #}
+<div id="popup1" class="modal fade">
+	<div class="modal-dialog" style="max-width: 900px">
+		<div id="modal-control" class="modal-content" style="background-color: transparent!important; border:none">
+			<div class="modal-body-alt"></div> {# In this body goes html that contains a button for closing the modal #}
+		</div>
+	</div>
+</div>
+{% endblock extrabody %}

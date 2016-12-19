@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head_title %}Welcome X | {{ block.super }}{% endblock %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+		
+			<div class ='col-sm-9'>
+		  		<h1>Try Django 1.8</h1>
+		  		<p>The MVP Landing project is designed to get your project started. 
+		  		The goal is to get you launch as soon as possible with the least amount of investment using time or money. Join us today.</p>
+		  		<p><a class="btn btn-lg btn-primary" href="" role="button">Join us &raquo;</a></p>
+			</div>
+
+			<div class='col-sm-9' >
+				<div class="embed-responsive embed-responsive-16by9">
+				  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/TmMNIN5TZpk" allowfullscreen></iframe>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		
+		<div class = 'col-sm-5' style="margin-bottom:24px">
+			<p class = 'lead text-xs-center'>Built With Django &amp; Bootstrap</p>
+			<img src='{% static "img/sampleimage.jpg" %}' class='img-fluid mx-auto d-block' style="max-width:90%;"/>
+		</div>
+
+		<div class='col-sm-5' style="margin-bottom:24px">
+			<p class='lead text-xs-center'>Created for Starters of All Kinds</p>
+			<span class='fa-stack fa-lg fa-5x img-fluid mx-auto d-block'>
+				<i class='fa fa-comment-o fa-stack-2x'></i>
+				<i style='color:yellow;' class="fa fa-bolt fa-stack-1x"></i>
+			</span>
+		</div>
+
+		<div class='col-sm-5' style="margin-bottom:24px">
+			<p class='lead text-xs-center'>Always Open Source</p>
+			<span class="fa-stack fa-lg fa-5x img-fluid mx-auto d-block">
+				<!-- <i class="fa fa-circle-o-notch fa-stack-2x fa-spin"></i> -->
+				<i class="fa fa-circle-o-notch fa-stack-2x"></i>
+				<!-- <i class="fa fa-square-o fa-stack-2x"></i> -->
+				<i class="fa fa-github fa-stack-1x"></i>
+			</span>
+		</div>
+		
+		<div class="col-sm-3">
+			<p class='lead text-xs-center'>{{ title }} {{ user }}</p>
+			<!-- {{ request.user }} -->
+			<form method='POST' action=''>
+				{% csrf_token %}
+				{{ form|crispy }}
+				<input class='btn btn-primary btn-block' type='submit' value='Sign Up' style="margin-bottom: 24px" />
+			</form>
+		</div>
+		
+	</div>
+</div>
+{% endblock %}

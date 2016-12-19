@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			<div class ='col-sm-18' style="text-align:center">
+				<br>
+				<div class="col-sm-6">
+					<span class='fa-stack fa-lg fa-5x'>
+						<i class='fa fa-comment-o fa-stack-2x'></i>
+						<i style='color:green;' class="fa fa-bolt fa-stack-1x"></i>
+					</span>
+				</div>
+				<div class="col-sm-6">
+				<br>
+			  		<h1>Sesion Finalizada</h1>
+			  		<br><br>
+			  		<h1>Gracias Por Tu Visita</h1>
+			  		<br><br><br><br>
+			  		<a class="btn btn-lg btn-primary" href="{% url 'django.contrib.auth.views.login' %}" role="button">Abrir Sesion &raquo;</a>
+		  		</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% load custom %} {# templatetags/custom #}
+
+{% block head_title %}Welcome X | {{ block.super }}{% endblock %}
+
+{% localize on %}
+
+{% block style %}
+<style>
+	.btn.dropdown-toggle.btn-default {padding:0}
+	.btn.dropdown-toggle.btn-default,
+	.btn.dropdown-toggle.btn-default:hover,
+	.btn.dropdown-toggle.btn-default:active,
+	.btn-group.bootstrap-select .dropdown-toggle.btn-default:focus,
+	.open > .btn.dropdown-toggle.btn-default,
+	.open > .btn.dropdown-toggle.btn-default:hover{background:none; border:none; margin:0; z-index:0;}
+	.btn-group.bootstrap-select.open .dropdown-toggle {-webkit-box-shadow: none;}
+	.bootstrap-select .dropdown-menu { background:none; border:none; -webkit-box-shadow: none;}
+	.btn.dropdown-toggle {width:44px; padding:0;}
+	.btn.dropdown-toggle:focus {outline:none;}
+	span.filter-option.pull-left {width:18px!important;}
+	/*
+	.btn.dropdown-toggle.btn-default .caret {
+    display:none;
+	}
+	.bootstrap-select.btn-group .dropdown-toggle .caret {
+	    position: absolute;
+	    z-index:100!important;
+	    top: 50%;
+	    right: 12px;
+	    margin-top: -2px;
+	    vertical-align: middle;
+	    background:transparent;
+	}
+	span.bs-caret{display:none!important; background:transparent!important;}
+	*/
+	
+	div[class^="col-md-"] {border-top: 1px solid lightgrey; height: 30px; overflow: hidden;}
+	.col-md-4 {border-right: 1px solid lightgrey;}
+	.row.tabular {border: 1px solid black;}
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+	$(document).ready(function(){
+		$(".form-lang").on("change", ".selectpicker", function() {
+			$( ".form-lang" ).trigger( "submit" );
+		});
+	});
+</script>
+{% endblock %}
+
+{% block jumbotron %}
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			<div class ='col-sm-9'>
+		  		<h1>Try Django 1.8</h1>
+		  		<p>The MVP Landing project is designed to get your project started. 
+		  		The goal is to get you launch as soon as possible with the least amount of investment using time or money. Join us today.</p>
+		  		<p><a class="btn btn-lg btn-primary" href="" role="button">Join us &raquo;</a></p>
+			</div>
+			
+			<div class='col-sm-9' >
+				<div class="embed-responsive embed-responsive-16by9">
+				  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/ePCI7BTlEnY" allowfullscreen></iframe>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+		{% comment %}
+			language.code = {{ language.code }} <br>
+			redirect_to = {{ redirect_to }} <br>
+			request.get_full_path = {{request.get_full_path}}
+			{% url 'set_language' %}
+		{% endcomment %}
+		{# Sending email to user {{ request.user.email_user(subject = testing, message = text, from_email=None, **kwargs) }} #}
+		
+{% block content %}
+	<div class="container">
+		<div class="row tabular">
+					<div class="col-md-2"> Now:                      </div> <div class="col-md-4"> {% now "jS F Y H:i" %} </div>
+					{% if clientIp %}
+					<div class="col-md-2"> client ip:                </div> <div class="col-md-4"> {{ clientIp }} </div> 
+					{% endif %}
+					<div class="col-md-2"> Locale:                   </div> <div class="col-md-4"> {{ LOCALE }} </div>
+					{% get_current_language as LANGUAGE_CODE %}
+					<div class="col-md-2"> Language Code:            </div> <div class="col-md-4"> {{ LANGUAGE_CODE }}</div>
+					<div class="col-md-2"> Tag equis:                </div> <div class="col-md-4"> {{ EQUIS }} </div>
+					<div class="col-md-2"> Sesión abierta:       	 </div> <div class="col-md-4"> {{ request.user.is_authenticated }} </div>
+					
+					<div class="col-md-18" style="height:1px; border-bottom: 1px solid black"></div>
+					
+					{% if request.user.is_authenticated %}
+						<div class="col-md-2"> User:                 </div> <div class="col-md-4"> {{ user }} </div>
+						<div class="col-md-2"> Nom usuario:          </div> <div class="col-md-4"> {{ user.get_username }} </div>
+						<div class="col-md-2"> First name:           </div> <div class="col-md-4"> {{ request.user.first_name }} </div>
+						<div class="col-md-2"> Last_name:            </div> <div class="col-md-4"> {{ request.user.last_name }} </div>
+						<div class="col-md-2"> email:                </div> <div class="col-md-4"> {{ user.email }} </div>
+						<div class="col-md-2"> Registrado en:        </div> <div class="col-md-4"> {{ request.user.date_joined }} </div>
+						<div class="col-md-2"> Ultima sesión:        </div> <div class="col-md-4"> {{ request.user.last_login }} </div>
+						<div class="col-md-2"> Activo:               </div> <div class="col-md-4"> {{ request.user.is_active }} </div>
+						<div class="col-md-2"> Staff:                </div> <div class="col-md-4"> {{ request.user.is_staff }} </div>
+						<div class="col-md-2"> Superuser:            </div> <div class="col-md-4"> {{ request.user.is_superuser }} </div>
+					 {# <div class="col-md-2"> Nombre completo:      </div> <div class="col-md-4"> {{ request.user|employee_data:'full_name' }} </div> #}
+					 {# <div class="col-md-2"> Email:                </div> <div class="col-md-4"> {{ request.user|employee_data:'email' }} </div> #}
+						<div class="col-md-2"> user's password:      </div> <div class="col-md-4"> {{ user.password|truncatechars:3 }} </div>
+				        <div class="col-md-2"> En grupo add_receipt: </div> <div class="col-md-4"> {{ request.user|has_group:"add_receipt" }} </div>
+				        <div class="col-md-2"> user groups:          </div> <div class="col-md-4"> {{ request.user.groups }} </div>			
+						<div class="col-md-2"> User perm:            </div> <div class="col-md-4"> {{ request.user.user_permissions }} </div>
+						<div class="col-md-2"> Group perm:   		 </div> <div class="col-md-4"> {{ request.user.get_group_permissions }} </div>
+						
+						<div class="col-md-18" style="height:1px; border-bottom: 1px solid black"></div>
+						
+						{% if request.user.is_superuser %}
+						<div class="col-md-2"> BASE_DIR:   </div> <div class="col-md-4"> {{ BASE_DIR }} </div>
+						<div class="col-md-2"> MEDIA_ROOT:   </div> <div class="col-md-4"> {{ MEDIA_ROOT }} </div>
+						<div class="col-md-2"> MEDIA_URL:   </div> <div class="col-md-4"> {{ MEDIA_URL }} </div>
+						<div class="col-md-2"> STATIC_ROOT:   </div> <div class="col-md-4"> {{ STATIC_ROOT }} </div>
+						<div class="col-md-2"> STATIC_URL:   </div> <div class="col-md-4"> {{ STATIC_URL }} </div>
+						{% endif %}
+						
+					{% endif %}
+		</div>
+		
+		<br>
+		<div class="row" style="border:1px solid green; height:30px">
+			<div style="float:left; margin: 2px 24px 0 6px;"> Forma para seleccionar lenguaje </div>
+			{# <!-- http://stackoverflow.com/questions/16971794/django-set-the-language see also http://books.gigatux.nl/mirror/django/final/ch20lev1sec4.html#ch20ex02 --> #}
+			{# <!-- selectpicker is a function in bootstrap-select-1.11.2 . Rather impractical. Takes a lot of css and js --> #}
+			<form class="form-lang" action="{% url 'set_language' %}" method="post">
+				{% csrf_token %}
+				<input name="next" type="hidden" value="{{ redirect_to }}" />
+				<select name="language" id="lang" class="selectpicker" data-width="30px" style="margin:-4px 0 0 12px">
+					{% get_language_info_list for LANGUAGES as languages %}
+					{% for language in languages %}
+						<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+						    {# {{ language.name_local }} ({{ language.code }}) #}
+						    {{ language.code }} 
+						</option>
+					{% endfor %}
+				</select>
+				<span style="display:none"><input class="form-submit" type="submit" value="Go" /></span>
+			</form>
+		</div>
+
+		<div class="row">
+			<div class ='col-sm-12'>
+				<!-- <h1>{{ queryset }}</h1> -->
+				{% if queryset %}
+					<h4>Welcome Staff</h4>
+					<table class='table'>
+					{% for instance in queryset %}
+						<tr><td>
+						{{ forloop.counter }}
+						</td><td>
+						{{ instance.sold_to }}
+						</td><td>
+						{{ instance.sold_by }}
+						</td><td>
+						{{ instance.invoice }}
+						</td><td>
+						{{ instance.total }}
+						</td><td>
+						{{ instance.cronos }}
+						</td><td>
+						{{ instance.timestamp|timesince }} ago
+						</td></tr>
+						{% if instance.email == "abc@gmail.edu" %}
+						<tr><td>is equal</td></tr>
+						{% endif %}
+					{% endfor %}
+					</table>
+				{% endif %}
+			</div>
+		</div>
+	</div>	
+{% endblock %}
+{% endlocalize %}

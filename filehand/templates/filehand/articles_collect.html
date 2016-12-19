@@ -1,0 +1,46 @@
+{# <!-- Ref. https://automatetheboringstuff.com/chapter8/ --> #}
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% load custom %} {# templatetags/custom #}
+{% block head_title %} Welcome X | {{ block.super }} {% endblock %}
+
+{% block js %}{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% localize on %}
+{% block content %}
+	<div class="container">	
+	
+		<div class="row">
+			<div class ='col-sm-18'>
+				<h4 class="text-xs-left" style="margin:18px 0 12px 0">{{title}}</h4>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class ='col-sm-18' style = "color:#CB040B">
+				{% if unacceptableNames %}
+					No Agregado(s): <span style="font-size:smaller;">(La única extensión permitida es .html. El punto es inaceptable excepto en .html)</span>
+					<ul>
+					{% for name in unacceptableNames %}
+						<li><span style = "color:#CB040B"> Nombre de archivo inaceptable: {{ name }}</span></li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+		
+		{% if formset %}
+			{% crispy formset helper %}
+			<input name="cancel" value="Cancelar" class="btn btn-primary" id="submit-id-cancel" onclick="javascript:history.go(-1);" style="margin: 12px 0 0 0; text-align:center" type="button">
+		{% endif %}
+
+	</div>
+{% endblock content %}
+{% endlocalize %}
+

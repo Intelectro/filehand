@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>Untitled Document</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+</head>
+
+<body>
+
+
+<div class="page-header">
+<h2>Site Development Notes</h2>
+</div>
+<div class="newspaper_1">
+<div class="pull-left item-image" style="margin: 0 6px 0 0;"><img src="../../media/img/articles/intelectro-spinner-256X256.png" alt="intelectro spinner" width="51" height="51" /></div>
+<p>The following are notes, comments, references on things done or to be done to implement functionalities, solve problems, fix bugs and in general improve this site.</p>
+<p><strong>Feature: Downloading to the server an image from a URL and adding it to an image field in the database</strong> <br />Suppose you want to use an image you found on the web as part of the content of a document in your site. If you reference the URL directly and the image is pulled from a non-encrypted source, browsers will complain about your site's SSL being compromised. Even if the source is encrypted, the image may disappear at any time. So I want my site to have a page where you can give it an image's URL and the name you want to assign to the image, and it will download the image to the server in a predefined location, and add it to an image field of a predefined table in the database. Search: "django how grab an image from a url and save". See: <a href="http://ishcray.com/downloading-and-saving-image-to-imagefield-in-django">http://ishcray.com/downloading-and-saving-image-to-imagefield-in-django</a></p>
+<p><strong>Bug: In some situations I get a Forbidden (403) CSRF verification failed. Request aborted. error when logging in.</strong><br /> I think it happens when I have been logged out due to idle timeout and then I try to log in from the same page where I was when session expired. Search: "django CSRF verification failed. Request aborted. when logging in". See: <a href="https://www.quora.com/Im-a-newbie-to-Django-I-always-get-Forbidden-403-CSRF-verification-failed-Request-aborted-error-when-I-try-to-submit-a-login-form-What-is-some-help">https://www.quora.com/Im-a-newbie-to-Django-I-always-get-Forbidden-403-CSRF-verification-failed-Request-aborted-error-when-I-try-to-submit-a-login-form-What-is-some-help</a></p>
+<p>&nbsp;</p>
+</div>
+<hr class="prettyline" />
+
+
+
+</body>
+</html>

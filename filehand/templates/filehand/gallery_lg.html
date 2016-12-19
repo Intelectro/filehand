@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load l10n %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% load custom %} {# templatetags/custom #}
+<!-- {# load widget_tweaks #} -->
+{# {% block head_title %} Welcome X | {{ block.super }} {% endblock %} #}
+{% block head_title %} Minimal Django File Upload Example  {% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function(){
+   //sh = screen.height; includes browser's tootlbars
+   hh = $("html").height();
+   nh = $(".navbar").height();
+   fh = $(".footer").height();
+   ch = $(".container.theme-showcase").height();
+   newCh = hh-nh-fh-24;
+   mt = (newCh-ch)/2;
+   //alert('hh = ' + hh + ', nh = ' + nh + ', fh = ' + fh + ', ch = ' + ch + ', newCh = ' + newCh + ', mt = ' + mt);
+   $(".container.theme-showcase").height(newCh).css({paddingTop: mt+"px"});
+});
+</script>
+{% endblock js %}
+
+{% block style %}
+<style>
+.container.theme-showcase {
+  position: relative;
+  /*border: 1px solid;*/
+}
+/* .center-vertically { border: 1px dashed deeppink; } */
+</style>
+{% endblock style %}
+
+{% localize on %}
+{% block content %}	
+
+	{% if galleryDocumentObject %}
+		<div class="container theme-showcase">
+			{% if galleryDocumentObject.docfile.name|isImageFile %}
+				<div class = "col-xs-18 center-vertically">
+					<img src="{{ galleryDocumentObject.docfile.url }}" class="img-fluid mx-auto d-block" width="{{ imgWidth|unlocalize }}" height="{{ imgHeight|unlocalize }}" />
+				</div>
+			{% endif %}
+		</div>	
+	{% endif %}
+	
+{% endblock content %}
+{% endlocalize %}
+
+
+{% comment %}
+	{% if file %}
+		<div class="container">
+			{% if file|isImageFile %}
+				<div class = "row">
+					<div class="col-xs-18" style="text-align:center">
+						<!-- <img class="image" src="{{ file }}" > -->
+						<img src="{{ file }}" class='img-fluid mx-auto d-block' style="max-width:90%;"/>
+						<!-- <img src="{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}"/> -->
+					</div>
+				</div>
+			{% endif %}
+		</div>	
+	{% endif %}
+	{% if galleryDocumentObject %}
+		galleryDocumentObject.docfile.name  = {{ galleryDocumentObject.docfile.name }} <br>
+		galleryDocumentObject.docfile.width = {{ galleryDocumentObject.docfile.width }} <br>
+		galleryDocumentObject.docfile.height = {{ galleryDocumentObject.docfile.height }} <br>
+		imgWidth = {{ imgWidth }} <br>
+		imgHeight = {{ imgHeight }} <br>
+	{% endif %}
+{% endcomment %}

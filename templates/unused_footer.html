@@ -1,0 +1,37 @@
+<!-- <footer class='footer navbar-fixed-bottom'> stays put at bottom even when content's height is larger than screen in which case it blocks content's view -->
+<!-- solved by adding class to body and container-fluid in base.html and styling these classes in custom.css -->
+<footer class='footer'>
+	{% block footer %} {% endblock %}
+	<div class="container" id="footer">
+		<div class="row">
+			<div class="col-sm-4">
+				Django Mytweets <br />
+				Languages:
+				<a href="/i18n/setlang/?language=en">en</a>
+				<a href="/i18n/setlang/?language=de">de</a>
+				<a href="/i18n/setlang/?language=es">es</a>
+				[ 218 ]Chapter 11
+			</div>
+			<div class="col-sm-4">
+				Django Mytweets <br />
+				Languages:
+				<a href="/i18n/setlang/?language=en">en</a>
+				<a href="/i18n/setlang/?language=de">de</a>
+				<a href="/i18n/setlang/?language=es">es</a>
+				[ 218 ]Chapter 11
+			</div>
+			<div class="col-sm-4">
+				Django Mytweets <br />
+				Languages:
+				<a href="/i18n/setlang/?language=en">en</a>
+				<a href="/i18n/setlang/?language=de">de</a>
+				<a href="/i18n/setlang/?language=es">es</a>
+				[ 218 ]Chapter 11
+			</div>
+		</div>
+	</div>
+
+	<a href="#top" id="back-top" class="fa fa-caret-square-o-up fa-2x" style="float:right; margin:-36px 36px 0 0; color:lightgrey"></a>
+	<a href="#top" id="back-top" class="fa fa-copyright fa-1x" style="float:left; margin:-24px 0 0 36px; color:grey"> Intelectro SA 2016</a>
+
+</footer>

@@ -1,0 +1,154 @@
+<!-- Modal -->
+{# <!-- http://bootsnipp.com/snippets/featured/sign-in-sign-up-dual-modal, http://v4-alpha.getbootstrap.com/components/navs/ --> #}
+<div class="modal fade bs-modal-sm" id="myModal" tabindex="-1"
+	role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<br>
+
+			<div class="bs-example bs-example-tabs">
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="nav-item"><a class="nav-link active login" href="#signin" data-toggle="tab">Entra</a></li>
+					<li class="nav-item"><a class="nav-link signup" href="#signup" data-toggle="tab">Regístrate</a></li>
+					<li class="nav-item"><a class="nav-link why" href="#why" data-toggle="tab">Por Que?</a></li>
+				</ul>
+			</div>
+
+			<div class="modal-body">
+				<div id="myTabContent" class="tab-content">
+					<div class="tab-pane fade in" id="why">
+						<p>Como usuario anónimo tienes acceso solo a información pública. 
+						Regístrate e inicia sesión para acceder a información para 
+						clientes o para staff según tu caso.</p>
+						<p></p>
+						<br> Para otros asuntos mándanos un correo a
+						<a href="mailto:a.elizondo@intelectro.mx">a.elizondo@intelectro.mx</a>
+					</div>
+
+					<!-- Sign In Form -->
+					<div class="tab-pane fade active in" id="signin">
+						<form class='form-horizontal' method='POST'
+							action='{% url "auth_login" %}'>
+							{% csrf_token %}
+							<fieldset>
+
+								<!-- Text input-->
+								<div class="control-group">
+									<label class="control-label" for="userid">Nombre de usuario:</label>
+									<div class="controls">
+										<input id="userid" name="username" type="text"
+											class="form-control" placeholder="Username"
+											class="input-medium form-control" required="">
+										<!-- <input type ='text' class='form-control' name = 'username' placeholder='Username' />  -->
+									</div>
+								</div>
+
+								<!-- Password input-->
+								<div class="control-group">
+									<label class="control-label" for="passwordinput">Password:</label>
+									<div class="controls">
+										<input required="" id="passwordinput" name="password"
+											class="form-control" type="password" placeholder="********"
+											class="input-medium form-control">
+										<!-- <input type ='password' class='form-control' name = 'password' placeholder='Password' />  -->
+									</div>
+								</div>
+
+								<!-- Button -->
+								<div class="control-group">
+									<label class="control-label" for="signin"></label>
+									<div class="controls">
+										<!-- <button id="signin" name="signin" class="btn btn-success">Sign In</button>  -->
+										<button id="signin" type="submit" class="btn btn-outline-secondary btn-block" style="color:black; border-color:black">Entrar</button>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+
+					<!-- Sign Up Form -->
+					<div class="tab-pane fade" id="signup">
+						<!-- <form class="form-horizontal"> -->
+						<form class='form-horizontal' method='POST'	action='{% url "registration_register" %}'>
+							{% csrf_token %}
+							<fieldset>
+								<!-- Text input-->
+								<div class="control-group">
+									<label class="control-label" for="Email">Email:</label>
+									<div class="controls">
+										<input id="Email" name="email" class="form-control"	type="email" placeholder="email" class="input-large" required="">
+										<!-- <input class="emailinput form-control" id="id_email" name="email" type="email"> -->
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="control-group">
+									<label class="control-label" for="userid">Nombre de usuario:</label>
+									<div class="controls">
+										<input id="userid" maxlength="30" name="username" maxlength="30" class="form-control" type="text" placeholder="username" class="input-large" required="">
+										<!-- <input class="textinput textInput form-control" id="id_username" maxlength="30" name="username" type="text"> -->
+									</div>
+								</div>
+
+								<!-- Password input-->
+								<div class="control-group">
+									<label class="control-label" for="password">Password:</label>
+									<div class="controls">
+										<input id="password" name="password1" class="form-control"
+											type="password" placeholder="********" class="input-large"
+											required="">
+										<!-- <input class="textinput textInput form-control" id="id_password1" name="password1" type="password"> -->
+										<em>1-8 Characters</em>
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="control-group">
+									<label class="control-label" for="reenterpassword">Password de nuevo:</label>
+									<div class="controls">
+										<input id="reenterpassword" class="form-control" name="password2" type="password" placeholder="********" class="input-large" required="">
+										<!-- <input class="textinput textInput form-control" id="id_password2" name="password2" type="password"> -->
+									</div>
+								</div>
+
+								<!-- Button -->
+								<div class="control-group">
+									<label class="control-label" for="confirmsignup"></label>
+									<div class="controls">
+										<button id="confirmsignup" type="submit" class="btn btn-outline-secondary btn-block btn-success" style="color:black; border-color:black">Enviar</button>
+										{# <button id="signin" type="submit" class="btn btn-outline-secondary btn-block" style="color:black; border-color:black">Entrar</button> #}
+										{# <!-- <input class="btn btn-block btn-primary" value="Sobres" type="submit"> --> #}
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<center>
+					<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+				</center>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+$('#myModal').on('shown.bs.modal', function () {
+    $('#userid').focus();
+});
+$('.bs-example.bs-example-tabs').on('click', 'a.login', function () {
+    setTimeout(function (){
+        $('#userid').focus();
+    }, 500);
+});
+$('#myModal').on('shown.bs.modal', function () {
+    $('#Email').focus();
+});
+$('.bs-example.bs-example-tabs').on('click', 'a.signup', function () {
+    setTimeout(function (){
+        $('#Email').focus();
+    }, 500);
+});
+</script>

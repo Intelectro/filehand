@@ -1,0 +1,222 @@
+{# bootstrap 4 navbar https://v4-alpha.getbootstrap.com/components/navbar/ #}
+{% load staticfiles %}
+{% load custom %} {# templatetags/custom #}
+{% load i18n %}
+{% load l10n %}
+<style>
+	/*.navbar.navbar-dark.bg-faded.navbar-static-top {background-color: #000040; border-radius:0; padding:0;}*/
+	/*.navbar.navbar-light.bg-faded.navbar-static-top * {background-color: #000040;}*/
+	.nav.navbar-nav .nav-link {padding-top: 1rem; padding-bottom: .1rem;}
+	@media screen and (max-width: 991px){
+		.navbar-toggleable-md .navbar-nav {padding: 3rem 0 0 2rem; display: block; margin-top:0}
+		.nav.navbar-nav.navbar-right{ float:left!important; margin:0; padding-top:0}
+	}
+	/*
+	.navbar-light .navbar-toggler {
+   		background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+ 	}
+ 	*/
+	.dropdown-menu {
+	    font-size: 1rem;
+	    color: red;
+	    text-align: left;
+	    list-style: none;
+	    background-color: #fff;
+	    -webkit-background-clip: padding-box;
+	    background-clip: padding-box;
+	    border: 1px solid rgba(0,0,0,.15);
+		border-top-left-radius:0;
+		border-top-right-radius:0;
+	}
+	.dropdown-item {color: rgba(0,0,0,.5);}
+	.dropdown-item:hover{color: rgba(0,0,0,.75);}
+	.navbar-dark .navbar-nav .nav-link:focus{color:black;}
+	#signdown select#id_horma { border: 1px solid lightgrey; border-radius: 4px; padding-left: 8px;}
+</style>
+<nav class="navbar navbar-light navbar-static-top" style="margin-top: .1em; border-bottom: .1em solid lightgrey; border-radius:0">
+	<div class="container">
+		<div class="navbar-header">
+			<div style="float:right; margin-top:0.2rem;">
+				<button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
+			</div>
+
+		<a class="navbar-brand" style="padding:6px 0 6px 0" href="/" > <img src="{% static 'img/intelectro-logo-320X65-grey-bkg-s4.jpg' %}"  height="39" width="192" /> </a> 
+		</div>
+
+		<div class="collapse navbar-toggleable-md" id="navbarResponsive">
+			<ul class="nav navbar-nav navbar-dark">
+			
+				{% comment %}
+				<li {% if 'about' in request.path %} class="nav-item active" {% else %} class="nav-item" {% endif %}>
+					<a class="nav-link" href="{% url 'about' %}">About <span class="sr-only">(about)</span> </a>
+				</li>
+      			{% endcomment %}
+
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="" id="responsiveNavbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Documentos</a>
+					<div class="dropdown-menu" aria-labelledby="responsiveNavbarDropdown">
+						{% if request.user.is_authenticated %}
+							<a class="dropdown-item" href="#signdown" data-toggle="modal" data-target=".bs-modal-md">Nuevo</a>
+						{% endif %}			
+						<a {% if 'articlesMgr_1' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'articlesMgr_1' ' ' ' '%}">Manejar Artículos 1</a>
+						<a {% if 'articlesMgr_2' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'articlesMgr_2' ' ' ' '%}">Manejar Artículos 2</a>
+						<a {% if 'classify_new' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'classify_new' ' ' %}">Clasificación Nuevo</a>
+						<a {% if 'articlesUserCanEdit_1' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'articlesUserCanEdit_1' %}">Editar Artículos 1</a>
+						<a {% if 'articlesUserCanEdit_2' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'articlesUserCanEdit_2' %}">Editar Artículos 2</a>
+						<span class="dropdown-header">Previous Interface</span>
+						<a {% if 'articlesWithPermissionList' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'articlesWithPermissionList' %}">Lista de Artículos</a>
+						<a {% if 'classify_obsolete' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'classify_obsolete' ' ' %}">Clasificación Obsoleto</a>
+						<a {% if 'articlePermissions' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'articlePermissions' ' ' ' '%}">Permisos</a>
+						<a {% if 'gallery' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'gallery' %}">Gallery</a>
+						{# <!-- <a {% if 'uploadArticleImages' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'uploadArticleImages' ' ' %}">Article Images</a> --> #}
+					</div>
+				</li>
+
+
+
+
+
+
+
+
+				{% if request.user.is_superuser %}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="" id="responsiveNavbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+					<div class="dropdown-menu" aria-labelledby="responsiveNavbarDropdown">
+						 <a {% if 'articles_collect' in request.path %} class="dropdown-item active" {% else %} class="dropdown-item" {% endif %} href="{% url 'articles_collect' %}"> Collect Articles </a>
+					</div>
+				</li>
+				{% endif %}
+			</ul>
+			
+			{# horizontal menu right side #}
+			<ul id="lang-switch" class="nav navbar-nav navbar-right" style="float:right"> {# pull-xs-right should be but is not in bootstrap 4 alpha 5 #}
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'user' %}">
+					{% if request.user.is_authenticated %}
+						<i class="fa fa-user" aria-hidden="true"></i>
+						{% trans "Hola " %} {{ request.user.username }} {# {{ request.user|employee_data:'first_name' }} #}
+					{% else %}
+						<i class="fa fa-user" aria-hidden="true"></i> ?
+					{% endif %}					
+					</a>
+				</li>
+				{# <!-- <li> {% include 'navbar_inc_language_switcher.html' %} </li> --> #}
+				
+				{% if LOCALE == 'en' %}
+					<li class="nav-item"> <a href="" class="nav-link switch-lang-es"> <i class="fa fa-caret-right" aria-hidden="true"></i> a Español </a> </li>
+				{% else %}
+					<li class="nav-item"> <a href="" class="nav-link switch-lang-en"> <i class="fa fa-caret-right" aria-hidden="true"></i> to English </a> </li>
+				{% endif %}
+			
+
+				{% if not request.user.is_authenticated %}
+					<li class="nav-item"> 
+						<a class="nav-link" href="#signup" class="signup" data-toggle="modal" data-target=".bs-modal-sm">
+						<i class="fa fa-sign-in" aria-hidden="true"></i> {% trans "Entra/Regístrate" %}</a>
+					</li>
+				{% else %}
+					<li class="nav-item"> <a class="nav-link" href="{% url 'auth_logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>Salir</a></li>
+				{% endif %}
+
+			</ul>
+
+		</div> {# <!-- <div class="collapse navbar-toggleable-md" id="navbarResponsive"> --> #}
+	</div> {# <!-- <div class="container"> --> #}
+</nav>
+
+
+{# DEAL WITH LANGUAGE SWITCHING BEGIN #}
+{% comment %}
+<form class="form-lang" action="{% url 'set_language' %}" method="post" style="display:none">
+	{% csrf_token %}
+	<input name="next" type="hidden" value="{{ redirect_to }}" />
+	<select name="language" id="lang" class="selpick">
+		<option value="" selected="selected">---------</option>
+		<option value="es">es</option>
+		<option value="en">en</option>
+	</select>
+	<input class="form-submit" type="submit" value="Go" />
+</form>
+{% endcomment %}
+
+<script>
+	$(document).ready(function(){
+		// change locale/language
+		$("#lang-switch").on("click", ".switch-lang-es", function() {
+			$(".form-lang select").val("es");
+			$( ".form-lang" ).trigger( "submit" );
+			return false;
+		});
+		$("#lang-switch").on("click", ".switch-lang-en", function() {
+			$(".form-lang select").val("en");
+			$( ".form-lang" ).trigger( "submit" );
+			return false;
+		});
+		
+		// to Make dropdown menu active when an element below it is active
+		// add class active to <li> element whose child <a> element is active
+		$('li.nav-item.dropdown').each(function( index ){
+			var list = $(this);			
+			//window.alert('found ' );
+		    $(list).find('a.dropdown-item').each(function () {
+		     	if ( $(this).hasClass('active') ) {
+		     		//window.alert( ' this.class ' + $(this).attr("class") );
+		     		$(list).addClass('active');
+		     	}
+		 	}); 
+		});
+	});
+</script>
+{# DEAL WITH LANGUAGE SWITCHING END #}
+
+{# DEAL WITH MODAL WINDOW WHERE A NEW DOCUMENT IS CREATED BEGIN #}
+<div class="modal fade bs-modal-md" id="fileNameModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content" id="signdown">
+			<div class="modal-header"><center><h4 class="modal-title">Nuevo Documento</h4></center></div>
+			<div class="modal-body">
+				<form class='form-horizontal' method='POST'	action='{% url "newArticle" %}'>
+					{% csrf_token %}
+						<!-- Text input-->
+						<div class="control-group" style="margin-bottom:12px">
+							<label class="control-label" for="Email">Nombre del archivo:*</label>
+							<div class="controls">
+								<input id="id_fileName" maxlength="100" name="fileName" type="text" class="form-control input-large" placeholder="nombre de documento" required>
+							</div>
+						</div>
+						<!-- select -->
+						<div class="control-group">
+							<label class="control-label" for="userid">Horma:</label>
+							<div class="controls">
+								<select id="id_horma" name="horma" style="width:100%; height:36px;">
+									<option value="articulo">Artículo</option>
+									<option value="nota">Nota</option>
+									<option value="recordatorio">Recordatorio</option>
+									<option value="vacio">Vacío</option>
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="confirmsignup"></label>
+							<div class="controls">
+								<button id="confirmsignup" type="submit" class="btn btn-outline-secondary btn-block btn-success" style="color:black; border-color:black">Enviar</button>
+							</div>
+						</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<center><button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button></center>
+			</div>
+		</div>
+	</div>
+</div>	
+<script>
+$('#fileNameModal').on('shown.bs.modal', function () {
+    $('#doc-name').focus();
+});
+</script>
+{# DEAL WITH MODAL WINDOW WHERE A NEW DOCUMENT IS CREATED END #}
+		
+{% include 'navbar_include_modal_login.html' %}
+
